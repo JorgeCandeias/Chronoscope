@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace Chronoscope
@@ -8,18 +10,19 @@ namespace Chronoscope
     /// </summary>
     internal class TaskScopeFactory : ITaskScopeFactory
     {
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly IServiceProvider _provider;
 
-        public TaskScopeFactory(ILoggerFactory loggerFactory)
+        public TaskScopeFactory(IServiceProvider provider)
         {
-            _loggerFactory = loggerFactory;
+            _provider = provider;
         }
 
         public ITaskScope CreateScope(Guid id, string? name, Guid? parentId)
         {
-            var logger = _loggerFactory.CreateLogger<TaskScope>();
+            var options = _provider.GetRequiredService<IOptions<ChronoScopeOptions>>();
+            var logger = _provider.GetRequiredService<ILogger<TaskScope>>();
 
-            return new TaskScope(_loggerFactory.CreateLogger<TaskScope>(), this, id, name, parentId);
+            return new TaskScope(options, logger, this, id, name, parentId);
         }
     }
 }
