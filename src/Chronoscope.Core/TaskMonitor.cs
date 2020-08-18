@@ -1,24 +1,19 @@
 ﻿using System;
 
-namespace Chronoscope.Core
+namespace Chronoscope
 {
+    /// <summary>
+    /// Default implementation of <see cref="ITaskMonitor"/>.
+    /// </summary>
     internal class TaskMonitor : ITaskMonitor
     {
         private readonly ITaskScopeFactory _factory;
 
         public TaskMonitor(ITaskScopeFactory factory)
         {
-            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            _factory = factory;
         }
 
-        public ITaskScope CreateScope(string name)
-        {
-            return _factory.CreateScope(name, null);
-        }
-
-        public ITaskScope CreateScope(Guid id, string name)
-        {
-            return _factory.CreateScope(id, name, null);
-        }
+        public ITaskScope CreateScope(Guid id, string? name) => _factory.CreateScope(id, name, null);
     }
 }

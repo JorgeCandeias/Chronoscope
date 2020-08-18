@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>Chronoscope</RootNamespace>
     <Nullable>enable</Nullable>
     <Authors>Jorge Candeias</Authors>
     <Company>Outcompute</Company>
     <Product>Chronoscope</Product>
     <NeutralLanguage>en-GB</NeutralLanguage>
-    <RootNamespace>Chronoscope</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,15 +15,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Chronoscope.Core.Abstractions\Chronoscope.Core.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

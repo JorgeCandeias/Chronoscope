@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 
-namespace Chronoscope.Core
+namespace Chronoscope
 {
     internal class TaskScope : ITaskScope
     {
@@ -9,21 +9,18 @@ namespace Chronoscope.Core
         private readonly ITaskScopeFactory _factory;
 
         private readonly Guid _id;
-        private readonly string _name;
-        private readonly ITaskScope? _parent;
+        private readonly string? _name;
+        private readonly Guid? _parentId;
 
-        public TaskScope(ILogger<TaskScope> logger, ITaskScopeFactory factory, Guid id, string name, ITaskScope? parent)
+        internal TaskScope(ILogger<TaskScope> logger, ITaskScopeFactory factory, Guid id, string? name, Guid? parentId)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-
+            _logger = logger;
+            _factory = factory;
             _id = id;
-            _name = name ?? throw new ArgumentNullException(nameof(name));
-            _parent = parent;
+            _name = name;
+            _parentId = parentId;
         }
 
-        public ITaskScope CreateScope(string name) => _factory.CreateScope(name, this);
-
-        public ITaskScope CreateScope(Guid id, string name) => _factory.CreateScope(id, name, this);
+        public ITaskScope CreateScope(Guid id, string? name) => _factory.CreateScope(id, name, _id);
     }
 }

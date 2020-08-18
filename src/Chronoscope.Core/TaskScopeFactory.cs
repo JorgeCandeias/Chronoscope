@@ -1,19 +1,25 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 
-namespace Chronoscope.Core
+namespace Chronoscope
 {
+    /// <summary>
+    /// Default implementation of <see cref="ITaskScopeFactory"/>.
+    /// </summary>
     internal class TaskScopeFactory : ITaskScopeFactory
     {
-        private readonly ILogger<TaskScope> _scopeLogger;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public TaskScopeFactory(ILogger<TaskScope> scopeLogger)
+        public TaskScopeFactory(ILoggerFactory loggerFactory)
         {
-            _scopeLogger = scopeLogger ?? throw new ArgumentNullException(nameof(scopeLogger));
+            _loggerFactory = loggerFactory;
         }
 
-        public ITaskScope CreateScope(string name, ITaskScope? parent) => CreateScope(Guid.NewGuid(), name, parent);
+        public ITaskScope CreateScope(Guid id, string? name, Guid? parentId)
+        {
+            var logger = _loggerFactory.CreateLogger<TaskScope>();
 
-        public ITaskScope CreateScope(Guid id, string name, ITaskScope? parent) => new TaskScope(_scopeLogger, this, id, name, parent);
+            return new TaskScope(_loggerFactory.CreateLogger<TaskScope>(), this, id, name, parentId);
+        }
     }
 }

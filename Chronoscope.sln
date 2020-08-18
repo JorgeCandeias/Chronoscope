@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronoscope.Core", "src\Chr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{45B0717A-E7C6-4C1F-9134-0DF557F31927}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronoscope.Core.Tests", "test\Chronoscope.Core.Tests\Chronoscope.Core.Tests.csproj", "{EDCAAAB7-8B2B-4075-8DCC-77477AE23939}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronoscope.Core.Tests", "test\Chronoscope.Core.Tests\Chronoscope.Core.Tests.csproj", "{EDCAAAB7-8B2B-4075-8DCC-77477AE23939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronoscope.Core.Abstractions", "src\Chronoscope.Core.Abstractions\Chronoscope.Core.Abstractions.csproj", "{A7AC0E9B-EBB4-4BF0-A5D2-BAD67A51A621}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{EDCAAAB7-8B2B-4075-8DCC-77477AE23939}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDCAAAB7-8B2B-4075-8DCC-77477AE23939}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDCAAAB7-8B2B-4075-8DCC-77477AE23939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7AC0E9B-EBB4-4BF0-A5D2-BAD67A51A621}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7AC0E9B-EBB4-4BF0-A5D2-BAD67A51A621}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7AC0E9B-EBB4-4BF0-A5D2-BAD67A51A621}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7AC0E9B-EBB4-4BF0-A5D2-BAD67A51A621}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
