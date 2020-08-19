@@ -16,5 +16,7 @@ namespace Chronoscope
         /// The name of this scope.
         /// </summary>
         string Name { get; }
+
+
     }
 }

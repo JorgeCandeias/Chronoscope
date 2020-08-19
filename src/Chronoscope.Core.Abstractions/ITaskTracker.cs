@@ -7,7 +7,7 @@ namespace Chronoscope
     /// Defines a tracking activity as created by a scope.
     /// </summary>
     [SuppressMessage("Naming", "CA1716:Identifiers should not match keywords")]
-    public interface ITrackingActivity
+    public interface ITaskTracker
     {
         Guid Id { get; }
 
