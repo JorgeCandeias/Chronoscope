@@ -10,7 +10,7 @@ namespace Chronoscope
         private readonly ILogger<TaskScope> _logger;
         private readonly ITaskScopeFactory _factory;
 
-        internal TaskScope(IOptions<ChronoScopeOptions> options, ILogger<TaskScope> logger, ITaskScopeFactory factory, Guid id, string? name, Guid? parentId)
+        internal TaskScope(IOptions<ChronoscopeOptionsX> options, ILogger<TaskScope> logger, ITaskScopeFactory factory, Guid id, string? name, Guid? parentId)
         {
             _logger = logger;
             _factory = factory;
