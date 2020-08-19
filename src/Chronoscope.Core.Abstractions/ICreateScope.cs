@@ -12,7 +12,7 @@ namespace Chronoscope
         /// </summary>
         /// <param name="id">The user-defined id for this scope. Must be universally unique.</param>
         /// <param name="name">The name of this scope. Does not have to be unique.</param>
-        ITaskScope CreateScope(Guid id, string? name);
+        ITrackingScope CreateScope(Guid id, string? name);
     }
 
     /// <summary>
@@ -24,7 +24,7 @@ namespace Chronoscope
         /// Creates a new child scope with an automatic identifier and the specified name.
         /// </summary>
         /// <param name="name">The name of this scope. Does not have to be unique.</param>
-        public static ITaskScope CreateScope(this ICreateScope obj, string? name)
+        public static ITrackingScope CreateScope(this ICreateScope obj, string? name)
         {
             if (obj is null) throw new ArgumentNullException(nameof(obj));
 
@@ -34,7 +34,7 @@ namespace Chronoscope
         /// <summary>
         /// Creates a new nameless child scope with an automatic identifier.
         /// </summary>
-        public static ITaskScope CreateScope(this ICreateScope obj)
+        public static ITrackingScope CreateScope(this ICreateScope obj)
         {
             return obj.CreateScope(null);
         }
