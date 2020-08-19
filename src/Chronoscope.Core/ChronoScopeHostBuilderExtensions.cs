@@ -38,5 +38,17 @@ namespace Microsoft.Extensions.Hosting
 
             return builder;
         }
+
+        /// <summary>
+        /// Adds and configures chronoscope services on the host builder.
+        /// Multiple calls are cumulative.
+        /// </summary>
+        /// <param name="builder">The builder to extend.</param>
+        /// <param name="configure">The configuration action to apply</param>
+        /// <returns>The same host builder to allow chaining.</returns>
+        public static IHostBuilder UseChronoscope(this IHostBuilder builder, Action<IChronoscopeBuilder> configure)
+        {
+            return builder.UseChronoscope((context, chrono) => configure(chrono));
+        }
     }
 }

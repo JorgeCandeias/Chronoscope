@@ -12,6 +12,12 @@ namespace Chronoscope
     {
         public ChronoscopeBuilder(IHostBuilder builder)
         {
+            // wire up common services
+            builder.ConfigureServices((context, services) =>
+            {
+                services.AddChronoscope();
+            });
+
             // wire up chronoscope configurations
             builder.ConfigureServices((context, services) =>
             {

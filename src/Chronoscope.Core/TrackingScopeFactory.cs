@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 
 namespace Chronoscope
 {
@@ -7,16 +8,18 @@ namespace Chronoscope
     /// </summary>
     internal class TrackingScopeFactory : ITrackingScopeFactory
     {
-        private readonly IChronoscopeContext _context;
+        private readonly IOptions<ChronoscopeOptions> _options;
+        private readonly ITrackerFactory _trackerFactory;
 
-        public TrackingScopeFactory(IChronoscopeContext context)
+        public TrackingScopeFactory(IOptions<ChronoscopeOptions> options, ITrackerFactory trackerFactory)
         {
-            _context = context;
+            _options = options;
+            _trackerFactory = trackerFactory;
         }
 
         public ITrackingScope CreateScope(Guid id, string? name, Guid? parentId)
         {
-            return new TrackingScope(_context, id, name, parentId);
+            return new TrackingScope(_options, this, _trackerFactory, id, name, parentId);
         }
     }
 }

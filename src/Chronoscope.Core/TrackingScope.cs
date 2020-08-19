@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.Globalization;
 
 namespace Chronoscope
@@ -8,14 +9,16 @@ namespace Chronoscope
     /// </summary>
     internal class TrackingScope : ITrackingScope
     {
-        private readonly IChronoscopeContext _context;
+        private readonly ITrackingScopeFactory _factory;
+        private readonly ITrackerFactory _trackerFactory;
 
-        internal TrackingScope(IChronoscopeContext context, Guid id, string? name, Guid? parentId)
+        internal TrackingScope(IOptions<ChronoscopeOptions> options, ITrackingScopeFactory factory, ITrackerFactory trackerFactory, Guid id, string? name, Guid? parentId)
         {
-            _context = context;
+            _factory = factory;
+            _trackerFactory = trackerFactory;
 
             Id = id;
-            Name = name ?? string.Format(CultureInfo.InvariantCulture, context.Options.Value.DefaultTaskScopeNameFormat, id);
+            Name = name ?? string.Format(CultureInfo.InvariantCulture, options.Value.DefaultTaskScopeNameFormat, id);
             ParentId = parentId;
         }
 
@@ -25,8 +28,8 @@ namespace Chronoscope
 
         public Guid? ParentId { get; }
 
-        public ITrackingScope CreateScope(Guid id, string? name) => _context.TrackingScopeFactory.CreateScope(id, name, Id);
+        public ITrackingScope CreateScope(Guid id, string? name) => _factory.CreateScope(id, name, Id);
 
-        public IManualTracker CreateTracker() => _context.TrackerFactory.CreateTracker(Id);
+        public IManualTracker CreateTracker() => _trackerFactory.CreateTracker(Id);
     }
 }
