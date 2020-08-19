@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Chronoscope
 {
@@ -8,12 +7,13 @@ namespace Chronoscope
     /// </summary>
     internal class ManualTracker : IManualTracker
     {
-        public ManualTracker(Guid scopeId)
+        private readonly ITrackerStopwatch _watch;
+
+        public ManualTracker(ITrackerStopwatch watch, Guid scopeId)
         {
+            _watch = watch;
             ScopeId = scopeId;
         }
-
-        private readonly Stopwatch _watch = new Stopwatch();
 
         public Guid Id { get; } = Guid.NewGuid();
         public Guid ScopeId { get; }
