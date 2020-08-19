@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 
@@ -20,9 +19,8 @@ namespace Chronoscope
         public ITaskScope CreateScope(Guid id, string? name, Guid? parentId)
         {
             var options = _provider.GetRequiredService<IOptions<ChronoscopeOptions>>();
-            var logger = _provider.GetRequiredService<ILogger<TaskScope>>();
 
-            return new TaskScope(options, logger, this, id, name, parentId);
+            return new TaskScope(options, this, id, name, parentId);
         }
     }
 }
