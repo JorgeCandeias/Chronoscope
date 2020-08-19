@@ -10,6 +10,13 @@ namespace Chronoscope
     public interface IChronoscopeBuilder
     {
         /// <summary>
+        /// Allows adding chronoscope specific extensions for configuration.
+        /// </summary>
+        /// <param name="configure">The callback to use for adding services.</param>
+        /// <returns>The same builder instance to allow chaining.</returns>
+        public IChronoscopeBuilder ConfigureChronoscope(Action<HostBuilderContext, IChronoscopeBuilder> configure);
+
+        /// <summary>
         /// Allows adding services to the underlying host.
         /// </summary>
         /// <param name="configure">The callback to use for adding services.</param>
@@ -22,6 +29,20 @@ namespace Chronoscope
     /// </summary>
     public static class ChronoscopeBuilderExtensions
     {
+        /// <summary>
+        /// Allows adding chronoscope specific extensions for configuration.
+        /// </summary>
+        /// <param name="builder">The builder to extend.</param>
+        /// <param name="configure">The callback to use for adding services.</param>
+        /// <returns>The same builder instance to allow chaining.</returns>
+        public static IChronoscopeBuilder ConfigureChronoscope(this IChronoscopeBuilder builder, Action<IChronoscopeBuilder> configure)
+        {
+            if (builder is null) throw new ArgumentNullException(nameof(builder));
+            if (configure is null) throw new ArgumentNullException(nameof(configure));
+
+            return builder.ConfigureChronoscope((context, services) => configure(services));
+        }
+
         /// <summary>
         /// Allows adding services to the underlying host.
         /// </summary>
