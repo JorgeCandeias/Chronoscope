@@ -19,7 +19,7 @@ namespace Chronoscope
 
         public ITaskScope CreateScope(Guid id, string? name, Guid? parentId)
         {
-            var options = _provider.GetRequiredService<IOptions<ChronoscopeOptionsX>>();
+            var options = _provider.GetRequiredService<IOptions<ChronoscopeOptions>>();
             var logger = _provider.GetRequiredService<ILogger<TaskScope>>();
 
             return new TaskScope(options, logger, this, id, name, parentId);

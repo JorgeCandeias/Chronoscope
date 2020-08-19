@@ -2,7 +2,7 @@
 
 namespace Chronoscope
 {
-    public class ChronoscopeOptionsX
+    public class ChronoscopeOptions
     {
         [Required]
         public string DefaultTaskScopeNameFormat { get; } = "Scope {0}";
