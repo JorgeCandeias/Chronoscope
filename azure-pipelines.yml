@@ -19,7 +19,7 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '5.x'
+    version: '5.0.0-preview7'
 
 - task: SonarCloudPrepare@1
   inputs:
