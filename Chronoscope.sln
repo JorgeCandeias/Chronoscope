@@ -9,7 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{45B0717A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronoscope.Core.Tests", "test\Chronoscope.Core.Tests\Chronoscope.Core.Tests.csproj", "{EDCAAAB7-8B2B-4075-8DCC-77477AE23939}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chronoscope.Core.Abstractions", "src\Chronoscope.Core.Abstractions\Chronoscope.Core.Abstractions.csproj", "{A7AC0E9B-EBB4-4BF0-A5D2-BAD67A51A621}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chronoscope.Core.Abstractions", "src\Chronoscope.Core.Abstractions\Chronoscope.Core.Abstractions.csproj", "{A7AC0E9B-EBB4-4BF0-A5D2-BAD67A51A621}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C5230FB9-7979-4745-8597-3CAB3FE66E54}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
