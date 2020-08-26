@@ -19,7 +19,8 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    useGlobalJson: true
+    version: '5.0.x'
+    includePreviewVersions: true
 
 - task: SonarCloudPrepare@1
   inputs:
