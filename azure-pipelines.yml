@@ -14,11 +14,6 @@ steps:
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
-    version: '2.x'
-
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
     version: '5.0.x'
     includePreviewVersions: true
 
