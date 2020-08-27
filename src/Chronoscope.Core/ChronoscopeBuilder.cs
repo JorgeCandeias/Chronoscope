@@ -12,6 +12,8 @@ namespace Chronoscope
     {
         public ChronoscopeBuilder(IHostBuilder builder)
         {
+            if (builder is null) throw new ArgumentNullException(nameof(builder));
+
             // wire up common services
             builder.ConfigureServices((context, services) =>
             {
