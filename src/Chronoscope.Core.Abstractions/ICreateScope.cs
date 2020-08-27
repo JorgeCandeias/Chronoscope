@@ -24,19 +24,19 @@ namespace Chronoscope
         /// Creates a new child scope with an automatic identifier and the specified name.
         /// </summary>
         /// <param name="name">The name of this scope. Does not have to be unique.</param>
-        public static ITrackingScope CreateScope(this ICreateScope obj, string? name)
+        public static ITrackingScope CreateScope(this ICreateScope creator, string? name)
         {
-            if (obj is null) throw new ArgumentNullException(nameof(obj));
+            if (creator is null) throw new ArgumentNullException(nameof(creator));
 
-            return obj.CreateScope(Guid.NewGuid(), name);
+            return creator.CreateScope(Guid.NewGuid(), name);
         }
 
         /// <summary>
         /// Creates a new nameless child scope with an automatic identifier.
         /// </summary>
-        public static ITrackingScope CreateScope(this ICreateScope obj)
+        public static ITrackingScope CreateScope(this ICreateScope creator)
         {
-            return obj.CreateScope(null);
+            return creator.CreateScope(null);
         }
     }
 }

@@ -7,6 +7,20 @@ namespace Chronoscope.Core.Tests
     public class CreateScopeExtensionsTests
     {
         [Fact]
+        public void CreateScopeWithNameThrowsOnNullCreator()
+        {
+            // arrange
+            var name = Guid.NewGuid().ToString();
+            ICreateScope creator = null;
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => creator.CreateScope(name));
+
+            // assert
+            Assert.Equal(nameof(creator), ex.ParamName);
+        }
+
+        [Fact]
         public void CreateScopeWithNameReturnsNewScope()
         {
             // arrange
