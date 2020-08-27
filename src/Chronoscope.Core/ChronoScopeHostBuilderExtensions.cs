@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.Hosting
         public static IHostBuilder UseChronoscope(this IHostBuilder builder, Action<HostBuilderContext, IChronoscopeBuilder> configure)
         {
             if (builder is null) throw new ArgumentNullException(nameof(builder));
+            if (configure is null) throw new ArgumentNullException(nameof(configure));
 
             ChronoscopeBuilder chrono;
             if (builder.Properties.TryGetValue(BuilderKey, out var value))
@@ -48,6 +49,9 @@ namespace Microsoft.Extensions.Hosting
         /// <returns>The same host builder to allow chaining.</returns>
         public static IHostBuilder UseChronoscope(this IHostBuilder builder, Action<IChronoscopeBuilder> configure)
         {
+            if (builder is null) throw new ArgumentNullException(nameof(builder));
+            if (configure is null) throw new ArgumentNullException(nameof(configure));
+
             return builder.UseChronoscope((context, chrono) => configure(chrono));
         }
     }
