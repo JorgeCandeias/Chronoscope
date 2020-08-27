@@ -15,7 +15,7 @@ namespace Chronoscope
         /// <summary>
         /// The name of this scope.
         /// </summary>
-        string Name { get; }
+        string? Name { get; }
 
         /// <summary>
         /// The unique identifier of the parent scope, if any.
