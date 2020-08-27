@@ -14,8 +14,9 @@ namespace Chronoscope.Core.Tests
         public void SimpleManualTracking()
         {
             // arrange identifiers
-            var id = Guid.NewGuid();
-            var name = Guid.NewGuid().ToString();
+            var scopeId = Guid.NewGuid();
+            var scopeName = Guid.NewGuid().ToString();
+            var trackingId = Guid.NewGuid();
 
             // arrange a stopwatch that tracks a known interval
             var elapsed = TimeSpan.FromSeconds(123);
@@ -46,8 +47,8 @@ namespace Chronoscope.Core.Tests
             {
                 // act - request services
                 var chrono = host.Services.GetRequiredService<IChronoscope>();
-                var scope = chrono.CreateScope(id, name);
-                var tracker = scope.CreateManualTracker();
+                var scope = chrono.CreateScope(scopeId, scopeName);
+                var tracker = scope.CreateManualTracker(trackingId);
 
                 // assert - elapsed is zero
                 Assert.Equal(TimeSpan.Zero, tracker.Elapsed);
@@ -66,14 +67,21 @@ namespace Chronoscope.Core.Tests
                 Mock.Get(watch).Verify(x => x.Stop());
                 Assert.Equal(elapsed, tracker.Elapsed);
 
-                // assert - scope created event was generated
+                // assert - events were generated
                 Assert.Collection(sink.Events,
                     e =>
                     {
                         var x = Assert.IsAssignableFrom<IScopeCreatedEvent>(e);
-                        Assert.Equal(id, x.ScopeId);
-                        Assert.Equal(name, x.Name);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(scopeName, x.Name);
                         Assert.Null(x.ParentScopeId);
+                        Assert.Equal(now, x.Timestamp);
+                    },
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<ITrackingStartedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(trackingId, x.TrackingId);
                         Assert.Equal(now, x.Timestamp);
                     });
             }
