@@ -10,6 +10,6 @@ namespace Chronoscope
         /// <summary>
         /// Creates a new manual tracker under this scope.
         /// </summary>
-        IManualTracker CreateTracker(Guid scopeId);
+        IManualTracker CreateTracker(Guid id, Guid scopeId);
     }
 }

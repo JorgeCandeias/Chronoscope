@@ -14,11 +14,11 @@ namespace Chronoscope
             _stopWatchFactory = stopWatchFactory;
         }
 
-        public IManualTracker CreateTracker(Guid scopeId)
+        public IManualTracker CreateTracker(Guid id, Guid scopeId)
         {
             var watch = _stopWatchFactory.Create();
 
-            return new ManualTracker(watch, scopeId);
+            return new ManualTracker(watch, id, scopeId);
         }
     }
 }

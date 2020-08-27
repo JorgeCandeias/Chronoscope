@@ -9,13 +9,14 @@ namespace Chronoscope
     {
         private readonly ITrackerStopwatch _watch;
 
-        public ManualTracker(ITrackerStopwatch watch, Guid scopeId)
+        public ManualTracker(ITrackerStopwatch watch, Guid id, Guid scopeId)
         {
             _watch = watch;
+            Id = id;
             ScopeId = scopeId;
         }
 
-        public Guid Id { get; } = Guid.NewGuid();
+        public Guid Id { get; }
         public Guid ScopeId { get; }
 
         public TimeSpan Elapsed => _watch.Elapsed;
