@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Chronoscope.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Chronoscope
 {
@@ -13,6 +14,9 @@ namespace Chronoscope
                 .AddSingleton<IChronoscope, Chronoscope>()
                 .AddSingleton<ITrackingScopeFactory, TrackingScopeFactory>()
                 .AddSingleton<ITrackerFactory, TrackerFactory>()
+                .AddSingleton<ITrackingSinks, TrackingSinks>()
+                .AddSingleton<ITrackingEventFactory, TrackingEventFactory>()
+                .AddSingleton<ISystemClock, SystemClock>()
                 .AddOptions<ChronoscopeOptions>().ValidateDataAnnotations().Services;
         }
     }

@@ -5,7 +5,7 @@ namespace Chronoscope.Events
     /// <summary>
     /// Default implementation of <see cref="ITrackingEventFactory"/>.
     /// </summary>
-    internal class ScopeCreatedEventFactory : ITrackingEventFactory
+    internal class TrackingEventFactory : ITrackingEventFactory
     {
         public IScopeCreatedEvent CreateScopeCreatedEvent(Guid scopeId, string? name, Guid? parentScopeId, DateTimeOffset timestamp)
         {

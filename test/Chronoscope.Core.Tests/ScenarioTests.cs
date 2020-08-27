@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Chronoscope.Core.Tests.Fakes;
+using Chronoscope.Events;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using System;
@@ -21,6 +23,13 @@ namespace Chronoscope.Core.Tests
             Mock.Get(watch).Setup(x => x.Stop()).Callback(() => Mock.Get(watch).Setup(x => x.Elapsed).Returns(elapsed));
             var factory = Mock.Of<ITrackerStopwatchFactory>(x => x.Create() == watch);
 
+            // arrange a test sink
+            var sink = new FakeSink();
+
+            // arrange a system clock
+            var now = DateTimeOffset.Now;
+            var clock = Mock.Of<ISystemClock>(x => x.Now == now);
+
             // act - build host
             using (var host = Host
                 .CreateDefaultBuilder()
@@ -29,6 +38,8 @@ namespace Chronoscope.Core.Tests
                     chrono.ConfigureServices(services =>
                     {
                         services.AddSingleton(factory);
+                        services.AddSingleton<ITrackingSink>(sink);
+                        services.AddSingleton(clock);
                     });
                 })
                 .Build())
@@ -54,6 +65,17 @@ namespace Chronoscope.Core.Tests
                 // assert - elapsed time is correct
                 Mock.Get(watch).Verify(x => x.Stop());
                 Assert.Equal(elapsed, tracker.Elapsed);
+
+                // assert - scope created event was generated
+                Assert.Collection(sink.Events,
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<IScopeCreatedEvent>(e);
+                        Assert.Equal(id, x.ScopeId);
+                        Assert.Equal(name, x.Name);
+                        Assert.Null(x.ParentScopeId);
+                        Assert.Equal(now, x.Timestamp);
+                    });
             }
         }
     }
