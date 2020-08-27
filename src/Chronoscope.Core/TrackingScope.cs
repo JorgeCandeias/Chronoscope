@@ -30,6 +30,6 @@ namespace Chronoscope
 
         public ITrackingScope CreateScope(Guid id, string? name) => _factory.CreateScope(id, name, Id);
 
-        public IManualTracker CreateTracker() => _trackerFactory.CreateTracker(Id);
+        public IManualTracker CreateManualTracker() => _trackerFactory.CreateTracker(Id);
     }
 }

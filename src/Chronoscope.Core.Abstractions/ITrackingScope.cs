@@ -25,6 +25,6 @@ namespace Chronoscope
         /// <summary>
         /// Creates a new manual tracker under this scope.
         /// </summary>
-        IManualTracker CreateTracker();
+        IManualTracker CreateManualTracker();
     }
 }

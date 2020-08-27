@@ -11,14 +11,15 @@ namespace Chronoscope.Core.Tests
         [Fact]
         public void SimpleManualTracking()
         {
-            // arrange
+            // arrange identifiers
             var id = Guid.NewGuid();
             var name = Guid.NewGuid().ToString();
 
+            // arrange a stopwatch that tracks a known interval
             var elapsed = TimeSpan.FromSeconds(123);
             var watch = Mock.Of<ITrackerStopwatch>();
             Mock.Get(watch).Setup(x => x.Stop()).Callback(() => Mock.Get(watch).Setup(x => x.Elapsed).Returns(elapsed));
-            var watchFactory = Mock.Of<ITrackerStopwatchFactory>(x => x.Create() == watch);
+            var factory = Mock.Of<ITrackerStopwatchFactory>(x => x.Create() == watch);
 
             // act - build host
             using (var host = Host
@@ -27,7 +28,7 @@ namespace Chronoscope.Core.Tests
                 {
                     chrono.ConfigureServices(services =>
                     {
-                        services.AddSingleton(watchFactory);
+                        services.AddSingleton(factory);
                     });
                 })
                 .Build())
@@ -35,7 +36,7 @@ namespace Chronoscope.Core.Tests
                 // act - request services
                 var chrono = host.Services.GetRequiredService<IChronoscope>();
                 var scope = chrono.CreateScope(id, name);
-                var tracker = scope.CreateTracker();
+                var tracker = scope.CreateManualTracker();
 
                 // assert - elapsed is zero
                 Assert.Equal(TimeSpan.Zero, tracker.Elapsed);
@@ -51,6 +52,7 @@ namespace Chronoscope.Core.Tests
                 tracker.Stop();
 
                 // assert - elapsed time is correct
+                Mock.Get(watch).Verify(x => x.Stop());
                 Assert.Equal(elapsed, tracker.Elapsed);
             }
         }
