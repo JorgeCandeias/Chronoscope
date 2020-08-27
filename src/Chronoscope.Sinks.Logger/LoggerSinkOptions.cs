@@ -62,6 +62,14 @@ namespace Chronoscope.Sinks.Logger
             EventName = "TrackerCancelled",
             MessageFormat = "Scope {ScopeId} cancelled tracker {TrackerId} at {Timestamp} with elapsed time of {Elapsed}"
         };
+
+        [Required]
+        public LoggerMessageOptions TrackerWarningEventOptions { get; set; } = new LoggerMessageOptions
+        {
+            EventId = 8,
+            EventName = "TrackerWarning",
+            MessageFormat = "Scope {ScopeId} issued warning for tracker {TrackerId} at {Timestamp} with elapsed time of {Elapsed} with message {Message}"
+        };
     }
 
     public class LoggerMessageOptions
