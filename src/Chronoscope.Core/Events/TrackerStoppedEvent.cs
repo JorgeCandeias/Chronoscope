@@ -2,12 +2,9 @@
 
 namespace Chronoscope.Events
 {
-    /// <summary>
-    /// Default implementation of <see cref="ITrackerStartedEvent"/>.
-    /// </summary>
-    internal class TrackerStartedEvent : ITrackerStartedEvent
+    internal class TrackerStoppedEvent : ITrackerStoppedEvent
     {
-        public TrackerStartedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed)
+        public TrackerStoppedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed)
         {
             ScopeId = scopeId;
             TrackerId = trackerId;

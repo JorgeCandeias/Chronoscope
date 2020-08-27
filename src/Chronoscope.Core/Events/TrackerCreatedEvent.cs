@@ -7,11 +7,12 @@ namespace Chronoscope.Events
     /// </summary>
     internal class TrackerCreatedEvent : ITrackerCreatedEvent
     {
-        public TrackerCreatedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp)
+        public TrackerCreatedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed)
         {
             ScopeId = scopeId;
-            TrackerId = trackingId;
+            TrackerId = trackerId;
             Timestamp = timestamp;
+            Elapsed = elapsed;
         }
 
         public Guid ScopeId { get; }
@@ -19,5 +20,7 @@ namespace Chronoscope.Events
         public Guid TrackerId { get; }
 
         public DateTimeOffset Timestamp { get; }
+
+        public TimeSpan Elapsed { get; }
     }
 }

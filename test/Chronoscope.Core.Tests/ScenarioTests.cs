@@ -83,6 +83,7 @@ namespace Chronoscope.Core.Tests
                         Assert.Equal(scopeId, x.ScopeId);
                         Assert.Equal(trackingId, x.TrackerId);
                         Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(TimeSpan.Zero, x.Elapsed);
                     },
                     e =>
                     {
@@ -90,6 +91,15 @@ namespace Chronoscope.Core.Tests
                         Assert.Equal(scopeId, x.ScopeId);
                         Assert.Equal(trackingId, x.TrackerId);
                         Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(TimeSpan.Zero, x.Elapsed);
+                    },
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<ITrackerStoppedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(trackingId, x.TrackerId);
+                        Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(elapsed, x.Elapsed);
                     });
             }
         }

@@ -23,14 +23,16 @@ namespace Chronoscope.Sinks.Logger
             // create the high-performance logging delegates
             _logScopeCreated = LoggerMessage.Define<Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.ScopeCreatedEventOptions.EventId, opt.ScopeCreatedEventOptions.EventName), opt.ScopeCreatedEventOptions.MessageFormat);
             _logTrackerCreated = LoggerMessage.Define<Guid, Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.TrackerCreatedEventOptions.EventId, opt.TrackerCreatedEventOptions.EventName), opt.TrackerCreatedEventOptions.MessageFormat);
-            _logTrackerStarted = LoggerMessage.Define<Guid, Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.TrackerStartedEventOptions.EventId, opt.TrackerStartedEventOptions.EventName), opt.TrackerStartedEventOptions.MessageFormat);
+            _logTrackerStarted = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerStartedEventOptions.EventId, opt.TrackerStartedEventOptions.EventName), opt.TrackerStartedEventOptions.MessageFormat);
+            _logTrackerStopped = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerStoppedEventOptions.EventId, opt.TrackerStoppedEventOptions.EventName), opt.TrackerStoppedEventOptions.MessageFormat);
         }
 
         #region High-Performance Logging Delegates
 
         private readonly Action<ILogger, Guid, DateTimeOffset, Exception> _logScopeCreated;
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, Exception> _logTrackerCreated;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, Exception> _logTrackerStarted;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerStarted;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerStopped;
 
         #endregion High-Performance Logging Delegates
 
@@ -49,11 +51,15 @@ namespace Chronoscope.Sinks.Logger
                     break;
 
                 case ITrackerStartedEvent e:
-                    _logTrackerStarted(_logger, e.ScopeId, e.TrackerId, e.Timestamp, null);
+                    _logTrackerStarted(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, null);
+                    break;
+
+                case ITrackerStoppedEvent e:
+                    _logTrackerStopped(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, null);
                     break;
 
                 default:
-                    throw new NotSupportedException();
+                    break;
             }
         }
     }

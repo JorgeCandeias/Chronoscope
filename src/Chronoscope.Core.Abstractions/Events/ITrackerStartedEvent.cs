@@ -1,12 +1,9 @@
-﻿using System;
-
-namespace Chronoscope.Events
+﻿namespace Chronoscope.Events
 {
     /// <summary>
     /// The event raised when a tracker starts tracking.
     /// </summary>
-    public interface ITrackerStartedEvent : ITrackingEvent
+    public interface ITrackerStartedEvent : ITrackerEvent
     {
-        Guid TrackerId { get; }
     }
 }
