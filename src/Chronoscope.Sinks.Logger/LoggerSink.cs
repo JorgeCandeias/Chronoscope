@@ -25,6 +25,7 @@ namespace Chronoscope.Sinks.Logger
             _logTrackerCreated = LoggerMessage.Define<Guid, Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.TrackerCreatedEventOptions.EventId, opt.TrackerCreatedEventOptions.EventName), opt.TrackerCreatedEventOptions.MessageFormat);
             _logTrackerStarted = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerStartedEventOptions.EventId, opt.TrackerStartedEventOptions.EventName), opt.TrackerStartedEventOptions.MessageFormat);
             _logTrackerStopped = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerStoppedEventOptions.EventId, opt.TrackerStoppedEventOptions.EventName), opt.TrackerStoppedEventOptions.MessageFormat);
+            _logTrackerCompleted = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerCompletedEventOptions.EventId, opt.TrackerCompletedEventOptions.EventName), opt.TrackerCompletedEventOptions.MessageFormat);
         }
 
         #region High-Performance Logging Delegates
@@ -33,6 +34,7 @@ namespace Chronoscope.Sinks.Logger
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, Exception> _logTrackerCreated;
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerStarted;
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerStopped;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerCompleted;
 
         #endregion High-Performance Logging Delegates
 
@@ -56,6 +58,10 @@ namespace Chronoscope.Sinks.Logger
 
                 case ITrackerStoppedEvent e:
                     _logTrackerStopped(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, null);
+                    break;
+
+                case ITrackerCompletedEvent e:
+                    _logTrackerCompleted(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, null);
                     break;
 
                 default:

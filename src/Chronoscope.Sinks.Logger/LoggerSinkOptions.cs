@@ -28,7 +28,7 @@ namespace Chronoscope.Sinks.Logger
         {
             EventId = 3,
             EventName = "TrackerStarted",
-            MessageFormat = "Scope {ScopeId} started tracker {TrackerId} as {Timestamp} with {Elapsed} elapsed"
+            MessageFormat = "Scope {ScopeId} started tracker {TrackerId} at {Timestamp} with elapsed time of {Elapsed}"
         };
 
         [Required]
@@ -36,7 +36,15 @@ namespace Chronoscope.Sinks.Logger
         {
             EventId = 4,
             EventName = "TrackerStopped",
-            MessageFormat = "Scope {ScopeId} stopped tracker {TrackerId} as {Timestamp} with {Elapsed} elapsed"
+            MessageFormat = "Scope {ScopeId} stopped tracker {TrackerId} at {Timestamp} with elapsed of {Elapsed}"
+        };
+
+        [Required]
+        public LoggerMessageOptions TrackerCompletedEventOptions { get; set; } = new LoggerMessageOptions
+        {
+            EventId = 5,
+            EventName = "TrackerCompleted",
+            MessageFormat = "Scope {ScopeId} completed tracker {TrackerId} at {Timestamp} with elapsed time of {Elapsed}"
         };
     }
 
