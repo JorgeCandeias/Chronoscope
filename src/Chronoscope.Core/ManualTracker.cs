@@ -81,5 +81,13 @@ namespace Chronoscope
 
             _sink.Sink(_trackingEventFactory.CreateTrackerFaultedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, exception));
         }
+
+        public void Cancel(Exception? exception)
+        {
+            EnsureStopped();
+            EnsureSetDoneOnce();
+
+            _sink.Sink(_trackingEventFactory.CreateTrackerCancelledEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, exception));
+        }
     }
 }

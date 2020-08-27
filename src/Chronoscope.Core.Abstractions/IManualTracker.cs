@@ -30,6 +30,12 @@ namespace Chronoscope
         void Fault(Exception? exception);
 
         /// <summary>
+        /// Sets the tracking activity as cancelled.
+        /// </summary>
+        /// <param name="exception">The exception that caused the cancellation.</param>
+        void Cancel(Exception? exception);
+
+        /// <summary>
         /// The elapsed time measured by this tracker.
         /// </summary>
         TimeSpan Elapsed { get; }

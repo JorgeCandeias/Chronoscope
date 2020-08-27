@@ -27,6 +27,7 @@ namespace Chronoscope.Sinks.Logger
             _logTrackerStopped = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerStoppedEventOptions.EventId, opt.TrackerStoppedEventOptions.EventName), opt.TrackerStoppedEventOptions.MessageFormat);
             _logTrackerCompleted = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerCompletedEventOptions.EventId, opt.TrackerCompletedEventOptions.EventName), opt.TrackerCompletedEventOptions.MessageFormat);
             _logTrackerFaulted = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Error, new EventId(opt.TrackerFaultedEventOptions.EventId, opt.TrackerFaultedEventOptions.EventName), opt.TrackerFaultedEventOptions.MessageFormat);
+            _logTrackerCancelled = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Error, new EventId(opt.TrackerCancelledEventOptions.EventId, opt.TrackerCancelledEventOptions.EventName), opt.TrackerCancelledEventOptions.MessageFormat);
         }
 
         #region High-Performance Logging Delegates
@@ -37,6 +38,7 @@ namespace Chronoscope.Sinks.Logger
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerStopped;
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerCompleted;
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerFaulted;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerCancelled;
 
         #endregion High-Performance Logging Delegates
 
@@ -68,6 +70,10 @@ namespace Chronoscope.Sinks.Logger
 
                 case ITrackerFaultedEvent e:
                     _logTrackerFaulted(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, e.Exception);
+                    break;
+
+                case ITrackerCancelledEvent e:
+                    _logTrackerCancelled(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, e.Exception);
                     break;
 
                 default:
