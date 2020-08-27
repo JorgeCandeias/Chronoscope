@@ -104,5 +104,22 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.Equal(nameof(configure), ex.ParamName);
         }
+
+        [Fact]
+        public void UseChronoscopeWithBuilderOnlyDefersToMainExtension()
+        {
+            // arrange
+            var builder = new HostBuilder();
+            var called = false;
+            void configure(IChronoscopeBuilder b) { called = true; }
+
+            // act
+            var result = builder.UseChronoscope(configure);
+            result.Build();
+
+            // assert
+            Assert.Same(builder, result);
+            Assert.True(called);
+        }
     }
 }
