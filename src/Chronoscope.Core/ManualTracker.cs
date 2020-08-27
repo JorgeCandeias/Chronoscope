@@ -1,4 +1,5 @@
 ﻿using Chronoscope.Events;
+using Chronoscope.Properties;
 using System;
 
 namespace Chronoscope
@@ -26,6 +27,8 @@ namespace Chronoscope
             _sink.Sink(_trackingEventFactory.CreateTrackerCreatedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
         }
 
+        private bool _done;
+
         public Guid Id { get; }
         public Guid ScopeId { get; }
 
@@ -45,14 +48,38 @@ namespace Chronoscope
             _sink.Sink(_trackingEventFactory.CreateTrackerStoppedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
         }
 
-        public void Complete()
+        private void EnsureStopped()
         {
             if (_watch.IsRunning)
             {
                 Stop();
             }
+        }
+
+        private void EnsureSetDoneOnce()
+        {
+            if (_done)
+            {
+                throw new InvalidOperationException(Resources.Exception_ThisTrackerHasAlreadyCompleted);
+            }
+
+            _done = true;
+        }
+
+        public void Complete()
+        {
+            EnsureStopped();
+            EnsureSetDoneOnce();
 
             _sink.Sink(_trackingEventFactory.CreateTrackerCompletedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
+        }
+
+        public void Fault(Exception? exception)
+        {
+            EnsureStopped();
+            EnsureSetDoneOnce();
+
+            _sink.Sink(_trackingEventFactory.CreateTrackerFaultedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, exception));
         }
     }
 }

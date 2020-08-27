@@ -8,12 +8,30 @@ namespace Chronoscope
     /// </summary>
     public interface IManualTracker : ITracker
     {
+        /// <summary>
+        /// Starts measuring time.
+        /// </summary>
         void Start();
 
+        /// <summary>
+        /// Stops measuring time.
+        /// </summary>
         void Stop();
 
+        /// <summary>
+        /// Sets the tracking activity as completed.
+        /// </summary>
         void Complete();
 
+        /// <summary>
+        /// Sets the tracking activity as faulted.
+        /// </summary>
+        /// <param name="exception">The exception that caused the fault.</param>
+        void Fault(Exception? exception);
+
+        /// <summary>
+        /// The elapsed time measured by this tracker.
+        /// </summary>
         TimeSpan Elapsed { get; }
     }
 }

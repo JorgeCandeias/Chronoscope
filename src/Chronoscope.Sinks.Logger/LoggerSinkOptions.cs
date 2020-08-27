@@ -46,6 +46,14 @@ namespace Chronoscope.Sinks.Logger
             EventName = "TrackerCompleted",
             MessageFormat = "Scope {ScopeId} completed tracker {TrackerId} at {Timestamp} with elapsed time of {Elapsed}"
         };
+
+        [Required]
+        public LoggerMessageOptions TrackerFaultedEventOptions { get; set; } = new LoggerMessageOptions
+        {
+            EventId = 6,
+            EventName = "TrackerFaulted",
+            MessageFormat = "Scope {ScopeId} faulted tracker {TrackerId} at {Timestamp} with elapsed time of {Elapsed}"
+        };
     }
 
     public class LoggerMessageOptions
