@@ -9,6 +9,8 @@ namespace Chronoscope.Events
     {
         IScopeCreatedEvent CreateScopeCreatedEvent(Guid scopeId, string? name, Guid? parentScopeId, DateTimeOffset timestamp);
 
-        ITrackingStartedEvent CreateTrackingStartedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp);
+        ITrackerCreatedEvent CreateTrackerCreatedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp);
+
+        ITrackerStartedEvent CreateTrackerStartedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp);
     }
 }

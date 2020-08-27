@@ -12,9 +12,14 @@ namespace Chronoscope.Events
             return new ScopeCreatedEvent(scopeId, name, parentScopeId, timestamp);
         }
 
-        public ITrackingStartedEvent CreateTrackingStartedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp)
+        public ITrackerCreatedEvent CreateTrackerCreatedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp)
         {
-            return new TrackingStartedEvent(scopeId, trackingId, timestamp);
+            return new TrackerCreatedEvent(scopeId, trackingId, timestamp);
+        }
+
+        public ITrackerStartedEvent CreateTrackerStartedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp)
+        {
+            return new TrackerStartedEvent(scopeId, trackingId, timestamp);
         }
     }
 }

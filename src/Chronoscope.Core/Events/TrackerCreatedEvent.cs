@@ -3,11 +3,11 @@
 namespace Chronoscope.Events
 {
     /// <summary>
-    /// Default implementation of <see cref="ITrackingStartedEvent"/>.
+    /// Default implementation of <see cref="ITrackerCreatedEvent"/>.
     /// </summary>
-    internal class TrackingStartedEvent : ITrackingStartedEvent
+    internal class TrackerCreatedEvent : ITrackerCreatedEvent
     {
-        public TrackingStartedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp)
+        public TrackerCreatedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp)
         {
             ScopeId = scopeId;
             TrackingId = trackingId;

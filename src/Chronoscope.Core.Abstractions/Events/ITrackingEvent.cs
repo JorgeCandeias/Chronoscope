@@ -3,7 +3,7 @@
 namespace Chronoscope.Events
 {
     /// <summary>
-    /// Represents a tracking event as consumed by a <see cref="ITrackingSink"/>.
+    /// The common interface for a sink event as consumed by a <see cref="ITrackingSink"/>.
     /// </summary>
     public interface ITrackingEvent
     {

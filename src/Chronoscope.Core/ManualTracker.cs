@@ -22,6 +22,8 @@ namespace Chronoscope
 
             Id = id;
             ScopeId = scopeId;
+
+            _sink.Sink(_trackingEventFactory.CreateTrackerCreatedEvent(ScopeId, Id, _clock.Now));
         }
 
         public Guid Id { get; }
@@ -31,7 +33,7 @@ namespace Chronoscope
 
         public void Start()
         {
-            _sink.Sink(_trackingEventFactory.CreateTrackingStartedEvent(ScopeId, Id, _clock.Now));
+            _sink.Sink(_trackingEventFactory.CreateTrackerStartedEvent(ScopeId, Id, _clock.Now));
 
             _watch.Start();
         }
