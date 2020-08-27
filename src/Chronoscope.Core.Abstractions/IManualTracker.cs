@@ -12,6 +12,8 @@ namespace Chronoscope
 
         void Stop();
 
+        void Complete();
+
         TimeSpan Elapsed { get; }
     }
 }

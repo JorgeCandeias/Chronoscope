@@ -12,5 +12,7 @@ namespace Chronoscope
         void Stop();
 
         TimeSpan Elapsed { get; }
+
+        bool IsRunning { get; }
     }
 }

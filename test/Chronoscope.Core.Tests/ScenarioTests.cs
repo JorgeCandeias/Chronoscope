@@ -67,6 +67,12 @@ namespace Chronoscope.Core.Tests
                 Mock.Get(watch).Verify(x => x.Stop());
                 Assert.Equal(elapsed, tracker.Elapsed);
 
+                // act - complete tracking
+                tracker.Complete();
+
+                // assert - elapsed time is correct
+                Assert.Equal(elapsed, tracker.Elapsed);
+
                 // assert - events were generated
                 Assert.Collection(sink.Events,
                     e =>
@@ -96,6 +102,14 @@ namespace Chronoscope.Core.Tests
                     e =>
                     {
                         var x = Assert.IsAssignableFrom<ITrackerStoppedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(trackingId, x.TrackerId);
+                        Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(elapsed, x.Elapsed);
+                    },
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<ITrackerCompletedEvent>(e);
                         Assert.Equal(scopeId, x.ScopeId);
                         Assert.Equal(trackingId, x.TrackerId);
                         Assert.Equal(now, x.Timestamp);

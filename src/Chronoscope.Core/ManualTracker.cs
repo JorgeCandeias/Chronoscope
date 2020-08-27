@@ -44,5 +44,15 @@ namespace Chronoscope
 
             _sink.Sink(_trackingEventFactory.CreateTrackerStoppedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
         }
+
+        public void Complete()
+        {
+            if (_watch.IsRunning)
+            {
+                Stop();
+            }
+
+            _sink.Sink(_trackingEventFactory.CreateTrackerCompletedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
+        }
     }
 }

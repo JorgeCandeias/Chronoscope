@@ -14,5 +14,7 @@ namespace Chronoscope.Events
         ITrackerStartedEvent CreateTrackerStartedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed);
 
         ITrackerStoppedEvent CreateTrackerStoppedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed);
+
+        ITrackerCompletedEvent CreateTrackerCompletedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed);
     }
 }
