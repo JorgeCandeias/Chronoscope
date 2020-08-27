@@ -81,14 +81,14 @@ namespace Chronoscope.Core.Tests
                     {
                         var x = Assert.IsAssignableFrom<ITrackerCreatedEvent>(e);
                         Assert.Equal(scopeId, x.ScopeId);
-                        Assert.Equal(trackingId, x.TrackingId);
+                        Assert.Equal(trackingId, x.TrackerId);
                         Assert.Equal(now, x.Timestamp);
                     },
                     e =>
                     {
                         var x = Assert.IsAssignableFrom<ITrackerStartedEvent>(e);
                         Assert.Equal(scopeId, x.ScopeId);
-                        Assert.Equal(trackingId, x.TrackingId);
+                        Assert.Equal(trackingId, x.TrackerId);
                         Assert.Equal(now, x.Timestamp);
                     });
             }

@@ -10,13 +10,13 @@ namespace Chronoscope.Events
         public TrackerStartedEvent(Guid scopeId, Guid trackingId, DateTimeOffset timestamp)
         {
             ScopeId = scopeId;
-            TrackingId = trackingId;
+            TrackerId = trackingId;
             Timestamp = timestamp;
         }
 
         public Guid ScopeId { get; }
 
-        public Guid TrackingId { get; }
+        public Guid TrackerId { get; }
 
         public DateTimeOffset Timestamp { get; }
     }

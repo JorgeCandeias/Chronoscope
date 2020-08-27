@@ -7,6 +7,6 @@ namespace Chronoscope.Events
     /// </summary>
     public interface ITrackerStartedEvent : ITrackingEvent
     {
-        Guid TrackingId { get; }
+        Guid TrackerId { get; }
     }
 }

@@ -7,38 +7,41 @@ namespace Chronoscope.Sinks.Logger
     /// </summary>
     public class LoggerSinkOptions
     {
-        /// <summary>
-        /// The default logging event id for the scope created event.
-        /// </summary>
-        public static int DefaultScopeCreatedEventId { get; } = 1;
+        [Required]
+        public LoggerMessageOptions ScopeCreatedEventOptions { get; set; } = new LoggerMessageOptions
+        {
+            EventId = 1,
+            EventName = "ScopeCreated",
+            MessageFormat = "Scope {ScopeId} was created at {Timestamp}"
+        };
 
-        /// <summary>
-        /// The default logging event name for the scope created event.
-        /// </summary>
-        public static string DefaultScopeCreatedEventName { get; } = "ScopeCreated";
+        [Required]
+        public LoggerMessageOptions TrackerCreatedEventOptions { get; set; } = new LoggerMessageOptions
+        {
+            EventId = 2,
+            EventName = "TrackerCreated",
+            MessageFormat = "Scope {ScopeId} created tracker {TrakerId} at {Timestamp}"
+        };
 
-        /// <summary>
-        /// The default logging message format for the scope created event.
-        /// </summary>
-        public static string DefaultScopeCreatedMessageFormat { get; } = "Scope {ScopeId} was created at {Timestamp}";
+        [Required]
+        public LoggerMessageOptions TrackerStartedEventOptions { get; set; } = new LoggerMessageOptions
+        {
+            EventId = 3,
+            EventName = "TrackerStarted",
+            MessageFormat = "Scope {ScopeId} started tracker {TrackerId} as {Timestamp}"
+        };
+    }
 
-        /// <summary>
-        /// The logging event id for the scope created event.
-        /// </summary>
+    public class LoggerMessageOptions
+    {
         [Required]
         [Range(1, int.MaxValue)]
-        public int ScopeCreatedEventId { get; } = DefaultScopeCreatedEventId;
+        public int EventId { get; set; }
 
-        /// <summary>
-        /// The message format used for the scope created event.
-        /// </summary>
         [Required]
-        public string ScopeCreatedMessageFormat { get; } = DefaultScopeCreatedMessageFormat;
+        public string MessageFormat { get; set; }
 
-        /// <summary>
-        /// The name used for the scope creation event.
-        /// </summary>
         [Required]
-        public string ScopeCreatedEventName { get; } = DefaultScopeCreatedEventName;
+        public string EventName { get; set; }
     }
 }

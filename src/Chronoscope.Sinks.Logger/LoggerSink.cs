@@ -21,12 +21,16 @@ namespace Chronoscope.Sinks.Logger
             var opt = options?.Value ?? throw new ArgumentNullException(nameof(options));
 
             // create the high-performance logging delegates
-            _logScopeCreatedAction = LoggerMessage.Define<Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.ScopeCreatedEventId, opt.ScopeCreatedEventName), opt.ScopeCreatedMessageFormat);
+            _logScopeCreated = LoggerMessage.Define<Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.ScopeCreatedEventOptions.EventId, opt.ScopeCreatedEventOptions.EventName), opt.ScopeCreatedEventOptions.MessageFormat);
+            _logTrackerCreated = LoggerMessage.Define<Guid, Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.TrackerCreatedEventOptions.EventId, opt.TrackerCreatedEventOptions.EventName), opt.TrackerCreatedEventOptions.MessageFormat);
+            _logTrackerStarted = LoggerMessage.Define<Guid, Guid, DateTimeOffset>(LogLevel.Information, new EventId(opt.TrackerStartedEventOptions.EventId, opt.TrackerStartedEventOptions.EventName), opt.TrackerStartedEventOptions.MessageFormat);
         }
 
         #region High-Performance Logging Delegates
 
-        private readonly Action<ILogger, Guid, DateTimeOffset, Exception> _logScopeCreatedAction;
+        private readonly Action<ILogger, Guid, DateTimeOffset, Exception> _logScopeCreated;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, Exception> _logTrackerCreated;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, Exception> _logTrackerStarted;
 
         #endregion High-Performance Logging Delegates
 
@@ -36,8 +40,16 @@ namespace Chronoscope.Sinks.Logger
 
             switch (trackingEvent)
             {
-                case IScopeCreatedEvent sce:
-                    _logScopeCreatedAction(_logger, sce.ScopeId, sce.Timestamp, null);
+                case IScopeCreatedEvent e:
+                    _logScopeCreated(_logger, e.ScopeId, e.Timestamp, null);
+                    break;
+
+                case ITrackerCreatedEvent e:
+                    _logTrackerCreated(_logger, e.ScopeId, e.TrackerId, e.Timestamp, null);
+                    break;
+
+                case ITrackerStartedEvent e:
+                    _logTrackerStarted(_logger, e.ScopeId, e.TrackerId, e.Timestamp, null);
                     break;
 
                 default:
