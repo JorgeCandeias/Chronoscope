@@ -41,10 +41,5 @@ namespace Chronoscope
         /// <param name="exception">The exception that caused the warning.</param>
         /// <param name="message">A message relevant to this warning.</param>
         void Warn(Exception? exception, string? message);
-
-        /// <summary>
-        /// The elapsed time measured by this tracker.
-        /// </summary>
-        TimeSpan Elapsed { get; }
     }
 }

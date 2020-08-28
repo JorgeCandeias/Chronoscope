@@ -17,21 +17,10 @@ namespace Chronoscope
 
         private int _tracking;
 
-        private void AllowTrackingOnce()
-        {
-            if (Interlocked.CompareExchange(ref _tracking, 1, 0) == 0)
-            {
-                return;
-            }
-
-            throw new InvalidOperationException(Resources.Exception_ThisTrackerIsAlreadyTrackingAnotherAction);
-        }
-
         public TResult Track<TResult>(Func<ITrackingScope, CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
         {
             if (workload is null) throw new ArgumentNullException(nameof(workload));
 
-            AllowTrackingOnce();
             Start();
 
             TResult result;

@@ -1,6 +1,7 @@
 ﻿using Chronoscope.Events;
 using Chronoscope.Properties;
 using System;
+using System.Threading;
 
 namespace Chronoscope
 {
@@ -27,17 +28,28 @@ namespace Chronoscope
             _sink.Sink(_trackingEventFactory.CreateTrackerCreatedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
         }
 
-        private bool _done;
-
         public Guid Id { get; }
         public Guid ScopeId { get; }
 
         public TimeSpan Elapsed => _watch.Elapsed;
 
+        private int _tracking;
+
+        private void AllowTrackingOnce()
+        {
+            if (Interlocked.CompareExchange(ref _tracking, 1, 0) == 0)
+            {
+                return;
+            }
+
+            throw new InvalidOperationException(Resources.Exception_ThisTrackerIsAlreadyTrackingAnotherAction);
+        }
+
         public void Start()
         {
-            _sink.Sink(_trackingEventFactory.CreateTrackerStartedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
+            AllowTrackingOnce();
 
+            _sink.Sink(_trackingEventFactory.CreateTrackerStartedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
             _watch.Start();
         }
 
@@ -56,20 +68,9 @@ namespace Chronoscope
             }
         }
 
-        private void EnsureSetDoneOnce()
-        {
-            if (_done)
-            {
-                throw new InvalidOperationException(Resources.Exception_ThisTrackerHasAlreadyCompleted);
-            }
-
-            _done = true;
-        }
-
         public void Complete()
         {
             EnsureStopped();
-            EnsureSetDoneOnce();
 
             _sink.Sink(_trackingEventFactory.CreateTrackerCompletedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
         }
@@ -77,7 +78,6 @@ namespace Chronoscope
         public void Fault(Exception? exception)
         {
             EnsureStopped();
-            EnsureSetDoneOnce();
 
             _sink.Sink(_trackingEventFactory.CreateTrackerFaultedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, exception));
         }
@@ -85,7 +85,6 @@ namespace Chronoscope
         public void Cancel(Exception? exception)
         {
             EnsureStopped();
-            EnsureSetDoneOnce();
 
             _sink.Sink(_trackingEventFactory.CreateTrackerCancelledEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, exception));
         }

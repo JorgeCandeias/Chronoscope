@@ -6,7 +6,7 @@ namespace Chronoscope
     /// <summary>
     /// A tracker that automatically monitors synchronous workloads.
     /// </summary>
-    public interface IAutoSyncTracker
+    public interface IAutoSyncTracker : ITracker
     {
         /// <summary>
         /// Automatically and transparently measures the specified workload.
