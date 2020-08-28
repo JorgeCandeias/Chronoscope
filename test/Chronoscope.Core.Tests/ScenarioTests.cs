@@ -454,5 +454,117 @@ namespace Chronoscope.Core.Tests
                     });
             }
         }
+
+        [Fact]
+        public void SimpleAutoSyncTrackingFaultedCycle()
+        {
+            // arrange identifiers
+            var scopeId = Guid.NewGuid();
+            var scopeName = Guid.NewGuid().ToString();
+            var trackingId = Guid.NewGuid();
+
+            // arrange a stopwatch that tracks a known interval
+            var elapsed = TimeSpan.FromSeconds(123);
+            var watch = new FakeTrackerStopwatch
+            {
+                TargetElapsed = elapsed
+            };
+            var factory = Mock.Of<ITrackerStopwatchFactory>(x => x.Create() == watch);
+
+            // arrange a test sink
+            var sink = new FakeSink();
+
+            // arrange a system clock
+            var now = DateTimeOffset.Now;
+            var clock = new FakeSystemClock { Now = now };
+
+            // act - build host
+            using (var host = Host
+                .CreateDefaultBuilder()
+                .UseChronoscope(chrono =>
+                {
+                    chrono.ConfigureServices(services =>
+                    {
+                        services.AddSingleton(factory);
+                        services.AddSingleton<ITrackingSink>(sink);
+                        services.AddSingleton<ISystemClock>(clock);
+                    });
+                })
+                .Build())
+            {
+                // act - request services
+                var chrono = host.Services.GetRequiredService<IChronoscope>();
+                var scope = chrono.CreateScope(scopeId, scopeName);
+                var tracker = scope.CreateAutoSyncTracker(trackingId);
+
+                // assert - elapsed is zero
+                Assert.Equal(TimeSpan.Zero, tracker.Elapsed);
+
+                // act - do tracking
+                int result = -1;
+                try
+                {
+                    result = tracker.Track((scope, token) =>
+                    {
+                        var div = 0;
+                        return 1 / div;
+                    });
+                }
+                catch (DivideByZeroException)
+                {
+                    /* noop */
+                }
+
+                // assert - the result is correct
+                Assert.Equal(-1, result);
+
+                // assert - elapsed time is correct
+                Assert.Equal(elapsed, tracker.Elapsed);
+
+                // assert - events were generated
+                Assert.Collection(sink.Events,
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<IScopeCreatedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(scopeName, x.Name);
+                        Assert.Null(x.ParentScopeId);
+                        Assert.Equal(now, x.Timestamp);
+                    },
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<ITrackerCreatedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(trackingId, x.TrackerId);
+                        Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(TimeSpan.Zero, x.Elapsed);
+                    },
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<ITrackerStartedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(trackingId, x.TrackerId);
+                        Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(TimeSpan.Zero, x.Elapsed);
+                    },
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<ITrackerStoppedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(trackingId, x.TrackerId);
+                        Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(elapsed, x.Elapsed);
+                    },
+                    e =>
+                    {
+                        var x = Assert.IsAssignableFrom<ITrackerFaultedEvent>(e);
+                        Assert.Equal(scopeId, x.ScopeId);
+                        Assert.Equal(trackingId, x.TrackerId);
+                        Assert.Equal(now, x.Timestamp);
+                        Assert.Equal(elapsed, x.Elapsed);
+                        Assert.IsAssignableFrom<DivideByZeroException>(x.Exception);
+                    });
+            }
+        }
     }
 }

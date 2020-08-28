@@ -1,5 +1,4 @@
 ﻿using Chronoscope.Events;
-using Chronoscope.Properties;
 using System;
 using System.Threading;
 
@@ -14,8 +13,6 @@ namespace Chronoscope
         {
             _scope = scope;
         }
-
-        private int _tracking;
 
         public TResult Track<TResult>(Func<ITrackingScope, CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
         {
