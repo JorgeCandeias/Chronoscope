@@ -83,7 +83,7 @@ namespace Chronoscope.Sinks.Logger
                     break;
 
                 default:
-                    break;
+                    throw new InvalidOperationException($"TrackingEvent of type '{trackingEvent.GetType().Name}' is not supported by this sink");
             }
         }
     }
