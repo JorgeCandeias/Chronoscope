@@ -120,4 +120,7 @@
   <data name="Exception_ThisTrackerHasAlreadyCompleted" xml:space="preserve">
     <value>This tracker has already completed.</value>
   </data>
+  <data name="Exception_ThisTrackerIsAlreadyTrackingAnotherAction" xml:space="preserve">
+    <value>This tracker is already tracking another action.</value>
+  </data>
 </root>

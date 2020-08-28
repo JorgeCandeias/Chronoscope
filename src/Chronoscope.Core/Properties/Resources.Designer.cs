@@ -68,5 +68,14 @@ namespace Chronoscope.Properties {
                 return ResourceManager.GetString("Exception_ThisTrackerHasAlreadyCompleted", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This tracker is already tracking another action..
+        /// </summary>
+        internal static string Exception_ThisTrackerIsAlreadyTrackingAnotherAction {
+            get {
+                return ResourceManager.GetString("Exception_ThisTrackerIsAlreadyTrackingAnotherAction", resourceCulture);
+            }
+        }
     }
 }
