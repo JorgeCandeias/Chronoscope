@@ -21,11 +21,11 @@ namespace Chronoscope
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         }
 
-        public IAutoSyncTracker CreateAutoSyncTracker(Guid id, ITrackingScope scope)
+        public IAutoTracker CreateAutoSyncTracker(Guid id, ITrackingScope scope)
         {
             var watch = _stopWatchFactory.Create();
 
-            return new AutoSyncTracker(watch, _trackingEventFactory, _trackingSinks, _clock, id, scope);
+            return new AutoTracker(watch, _trackingEventFactory, _trackingSinks, _clock, id, scope);
         }
 
         public IManualTracker CreateManualTracker(Guid id, Guid scopeId)

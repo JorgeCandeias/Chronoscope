@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chronoscope
 {
@@ -31,7 +32,7 @@ namespace Chronoscope
         /// <summary>
         /// Creates a new automatic synchronous tracker under this scope.
         /// </summary>
-        IAutoSyncTracker CreateAutoSyncTracker(Guid id);
+        IAutoTracker CreateAutoTracker(Guid id);
     }
 
     /// <summary>
@@ -80,141 +81,242 @@ namespace Chronoscope
     /// <summary>
     /// User friendly extensions for implementers of <see cref="ITrackingScope"/>.
     /// </summary>
-    public static class TrackingScopeAutoSyncTrackerExtensions
+    public static class TrackingScopeAutoTrackerExtensions
     {
+        #region Void Sync Tracking With Known Id
+
         /// <summary>
-        /// Creates an automatic tracker and tracks the specified workload.
+        /// Creates and starts a new automatic tracker for the specified workload.
         /// </summary>
-        /// <typeparam name="TResult">The type of result of the workload.</typeparam>
-        /// <param name="scope">The scope under which to create the tracker.</param>
-        /// <param name="id">The id of the new tracker.</param>
+        /// <param name="scope">The scope under which to create the new tracker.</param>
+        /// <param name="id">The unique id of the new tracker.</param>
         /// <param name="workload">The workload to track.</param>
         /// <param name="cancellationToken">Allows cancelling the workload.</param>
-        public static TResult Track<TResult>(this ITrackingScope scope, Guid id, Func<ITrackingScope, CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(id).Track(workload, cancellationToken);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static TResult Track<TResult>(this ITrackingScope scope, Func<ITrackingScope, CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload, cancellationToken);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static TResult Track<TResult>(this ITrackingScope scope, Guid id, Func<TResult> workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(id).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static TResult Track<TResult>(this ITrackingScope scope, Func<TResult> workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static TResult Track<TResult>(this ITrackingScope scope, Guid id, Func<ITrackingScope, TResult> workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(id).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static TResult Track<TResult>(this ITrackingScope scope, Func<ITrackingScope, TResult> workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static TResult Track<TResult>(this ITrackingScope scope, Guid id, Func<CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(id).Track(workload, cancellationToken);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static TResult Track<TResult>(this ITrackingScope scope, Func<CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            return scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload, cancellationToken);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static void Track(this ITrackingScope scope, Guid id, Action workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            scope.CreateAutoSyncTracker(id).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static void Track(this ITrackingScope scope, Action workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static void Track(this ITrackingScope scope, Guid id, Action<ITrackingScope> workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            scope.CreateAutoSyncTracker(id).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static void Track(this ITrackingScope scope, Action<ITrackingScope> workload)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static void Track(this ITrackingScope scope, Guid id, Action<CancellationToken> workload, CancellationToken cancellationToken = default)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            scope.CreateAutoSyncTracker(id).Track(workload, cancellationToken);
-        }
-
-        /// <inheritdoc cref="Track{TResult}(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
-        public static void Track(this ITrackingScope scope, Action<CancellationToken> workload, CancellationToken cancellationToken = default)
-        {
-            if (scope is null) throw new ArgumentNullException(nameof(scope));
-
-            scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload, cancellationToken);
-        }
-
-        /// <inheritdoc cref="IAutoSyncTracker.Track{TResult}(Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
         public static void Track(this ITrackingScope scope, Guid id, Action<ITrackingScope, CancellationToken> workload, CancellationToken cancellationToken = default)
         {
             if (scope is null) throw new ArgumentNullException(nameof(scope));
 
-            scope.CreateAutoSyncTracker(id).Track(workload, cancellationToken);
+            scope.CreateAutoTracker(id).Track(workload, cancellationToken);
         }
 
-        /// <inheritdoc cref="IAutoSyncTracker.Track{TResult}(Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
+        /// <inheritdoc cref="Track(ITrackingScope, Guid, Action{ITrackingScope, CancellationToken}, CancellationToken)"/>
+        public static void Track(this ITrackingScope scope, Guid id, Action<ITrackingScope> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            scope.CreateAutoTracker(id).Track(workload);
+        }
+
+        /// <inheritdoc cref="Track(ITrackingScope, Guid, Action{ITrackingScope, CancellationToken}, CancellationToken)"/>
+        public static void Track(this ITrackingScope scope, Guid id, Action workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            scope.CreateAutoTracker(id).Track(workload);
+        }
+
+        #endregion Void Sync Tracking With Known Id
+
+        #region Void Sync Tracking With Automatic Id
+
+        /// <inheritdoc cref="Track(ITrackingScope, Guid, Action{ITrackingScope, CancellationToken}, CancellationToken)"/>
         public static void Track(this ITrackingScope scope, Action<ITrackingScope, CancellationToken> workload, CancellationToken cancellationToken = default)
         {
             if (scope is null) throw new ArgumentNullException(nameof(scope));
 
-            scope.CreateAutoSyncTracker(Guid.NewGuid()).Track(workload, cancellationToken);
+            scope.CreateAutoTracker(Guid.NewGuid()).Track(workload, cancellationToken);
         }
+
+        /// <inheritdoc cref="Track(ITrackingScope, Guid, Action{ITrackingScope, CancellationToken}, CancellationToken)"/>
+        public static void Track(this ITrackingScope scope, Action<ITrackingScope> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            scope.CreateAutoTracker(Guid.NewGuid()).Track(workload);
+        }
+
+        /// <inheritdoc cref="Track(ITrackingScope, Guid, Action{ITrackingScope, CancellationToken}, CancellationToken)"/>
+        public static void Track(this ITrackingScope scope, Action workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            scope.CreateAutoTracker(Guid.NewGuid()).Track(workload);
+        }
+
+        #endregion Void Sync Tracking With Automatic Id
+
+        #region Result Sync Tracking With Known Id
+
+        /// <inheritdoc cref="IAutoTracker.Track{TResult}(Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
+        public static TResult Track<TResult>(this ITrackingScope scope, Guid id, Func<ITrackingScope, CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).Track(workload, cancellationToken);
+        }
+
+        /// <inheritdoc cref="IAutoTracker.Track{TResult}(Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
+        public static TResult Track<TResult>(this ITrackingScope scope, Guid id, Func<ITrackingScope, TResult> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).Track(workload);
+        }
+
+        /// <inheritdoc cref="Track(ITrackingScope, Guid, Action{ITrackingScope, CancellationToken}, CancellationToken)"/>
+        public static TResult Track<TResult>(this ITrackingScope scope, Guid id, Func<TResult> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).Track(workload);
+        }
+
+        #endregion Result Sync Tracking With Known Id
+
+        #region Result Sync Tracking With Automatic Id
+
+        /// <inheritdoc cref="IAutoTracker.Track{TResult}(Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
+        public static TResult Track<TResult>(this ITrackingScope scope, Func<ITrackingScope, CancellationToken, TResult> workload, CancellationToken cancellationToken = default)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).Track(workload, cancellationToken);
+        }
+
+        /// <inheritdoc cref="IAutoTracker.Track{TResult}(Func{ITrackingScope, CancellationToken, TResult}, CancellationToken)"/>
+        public static TResult Track<TResult>(this ITrackingScope scope, Func<ITrackingScope, TResult> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).Track(workload);
+        }
+
+        /// <inheritdoc cref="Track(ITrackingScope, Guid, Action{ITrackingScope, CancellationToken}, CancellationToken)"/>
+        public static TResult Track<TResult>(this ITrackingScope scope, Func<TResult> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).Track(workload);
+        }
+
+        #endregion Result Sync Tracking With Automatic Id
+
+        #region Void Async Tracking With Known Id
+
+        /// <summary>
+        /// Creates and starts a new automatic tracker for the specified workload.
+        /// </summary>
+        /// <param name="scope">The scope under which to create the new tracker.</param>
+        /// <param name="id">The unique id of the new tracker.</param>
+        /// <param name="workload">The workload to track.</param>
+        /// <param name="cancellationToken">Allows cancelling the workload.</param>
+        public static Task TrackAsync(this ITrackingScope scope, Guid id, Func<ITrackingScope, CancellationToken, Task> workload, CancellationToken cancellationToken = default)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).TrackAsync(workload, cancellationToken);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task TrackAsync(this ITrackingScope scope, Guid id, Func<ITrackingScope, Task> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).TrackAsync(workload);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task TrackAsync(this ITrackingScope scope, Guid id, Func<Task> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).TrackAsync(workload);
+        }
+
+        #endregion Void Async Tracking With Known Id
+
+        #region Void Async Tracking With Automatic Id
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task TrackAsync(this ITrackingScope scope, Func<ITrackingScope, CancellationToken, Task> workload, CancellationToken cancellationToken = default)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).TrackAsync(workload, cancellationToken);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task TrackAsync(this ITrackingScope scope, Func<ITrackingScope, Task> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).TrackAsync(workload);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task TrackAsync(this ITrackingScope scope, Func<Task> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).TrackAsync(workload);
+        }
+
+        #endregion Void Async Tracking With Automatic Id
+
+        #region Result Async Tracking With Known Id
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task<TResult> TrackAsync<TResult>(this ITrackingScope scope, Guid id, Func<ITrackingScope, CancellationToken, Task<TResult>> workload, CancellationToken cancellationToken = default)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).TrackAsync(workload, cancellationToken);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task<TResult> TrackAsync<TResult>(this ITrackingScope scope, Guid id, Func<ITrackingScope, Task<TResult>> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).TrackAsync(workload);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task<TResult> TrackAsync<TResult>(this ITrackingScope scope, Guid id, Func<Task<TResult>> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(id).TrackAsync(workload);
+        }
+
+        #endregion Result Async Tracking With Known Id
+
+        #region Result Async Tracking With Automatic Id
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task<TResult> TrackAsync<TResult>(this ITrackingScope scope, Func<ITrackingScope, CancellationToken, Task<TResult>> workload, CancellationToken cancellationToken = default)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).TrackAsync(workload, cancellationToken);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task<TResult> TrackAsync<TResult>(this ITrackingScope scope, Func<ITrackingScope, Task<TResult>> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).TrackAsync(workload);
+        }
+
+        /// <inheritdoc cref="TrackAsync(ITrackingScope, Guid, Func{ITrackingScope, CancellationToken, Task}, CancellationToken)"/>
+        public static Task<TResult> TrackAsync<TResult>(this ITrackingScope scope, Func<Task<TResult>> workload)
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+
+            return scope.CreateAutoTracker(Guid.NewGuid()).TrackAsync(workload);
+        }
+
+        #endregion Result Async Tracking With Automatic Id
     }
 }

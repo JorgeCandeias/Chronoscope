@@ -41,6 +41,6 @@ namespace Chronoscope
 
         public IManualTracker CreateManualTracker(Guid id) => _trackerFactory.CreateManualTracker(id, Id);
 
-        public IAutoSyncTracker CreateAutoSyncTracker(Guid id) => _trackerFactory.CreateAutoSyncTracker(id, this);
+        public IAutoTracker CreateAutoTracker(Guid id) => _trackerFactory.CreateAutoSyncTracker(id, this);
     }
 }

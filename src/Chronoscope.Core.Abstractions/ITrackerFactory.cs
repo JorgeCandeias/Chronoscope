@@ -15,6 +15,6 @@ namespace Chronoscope
         /// <summary>
         /// Creates a new automatic synchronous tracker under this scope.
         /// </summary>
-        IAutoSyncTracker CreateAutoSyncTracker(Guid id, ITrackingScope scope);
+        IAutoTracker CreateAutoSyncTracker(Guid id, ITrackingScope scope);
     }
 }

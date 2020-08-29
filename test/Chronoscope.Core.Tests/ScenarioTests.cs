@@ -394,7 +394,7 @@ namespace Chronoscope.Core.Tests
                 // act - request services
                 var chrono = host.Services.GetRequiredService<IChronoscope>();
                 var scope = chrono.CreateScope(scopeId, scopeName);
-                var tracker = scope.CreateAutoSyncTracker(trackingId);
+                var tracker = scope.CreateAutoTracker(trackingId);
 
                 // assert - elapsed is zero
                 Assert.Equal(TimeSpan.Zero, tracker.Elapsed);
@@ -496,7 +496,7 @@ namespace Chronoscope.Core.Tests
                 // act - request services
                 var chrono = host.Services.GetRequiredService<IChronoscope>();
                 var scope = chrono.CreateScope(scopeId, scopeName);
-                var tracker = scope.CreateAutoSyncTracker(trackingId);
+                var tracker = scope.CreateAutoTracker(trackingId);
 
                 // assert - elapsed is zero
                 Assert.Equal(TimeSpan.Zero, tracker.Elapsed);
@@ -608,7 +608,7 @@ namespace Chronoscope.Core.Tests
                 // act - request services
                 var chrono = host.Services.GetRequiredService<IChronoscope>();
                 var scope = chrono.CreateScope(scopeId, scopeName);
-                var tracker = scope.CreateAutoSyncTracker(trackingId);
+                var tracker = scope.CreateAutoTracker(trackingId);
 
                 // assert - elapsed is zero
                 Assert.Equal(TimeSpan.Zero, tracker.Elapsed);
