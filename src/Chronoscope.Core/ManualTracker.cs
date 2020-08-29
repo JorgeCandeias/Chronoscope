@@ -1,5 +1,4 @@
-﻿using Chronoscope.Events;
-using Chronoscope.Properties;
+﻿using Chronoscope.Properties;
 using System;
 using System.Threading;
 
@@ -10,22 +9,18 @@ namespace Chronoscope
     /// </summary>
     internal class ManualTracker : IManualTracker
     {
+        private readonly IChronoscopeContext _context;
         private readonly ITrackerStopwatch _watch;
-        private readonly ITrackingEventFactory _trackingEventFactory;
-        private readonly ITrackingSinks _sink;
-        private readonly ISystemClock _clock;
 
-        public ManualTracker(ITrackerStopwatch watch, ITrackingEventFactory trackingEventFactory, ITrackingSinks sink, ISystemClock clock, Guid id, Guid scopeId)
+        public ManualTracker(IChronoscopeContext context, Guid id, Guid scopeId)
         {
-            _watch = watch ?? throw new ArgumentNullException(nameof(watch));
-            _trackingEventFactory = trackingEventFactory ?? throw new ArgumentNullException(nameof(trackingEventFactory));
-            _sink = sink ?? throw new ArgumentNullException(nameof(sink));
-            _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _watch = _context.StopwatchFactory.Create();
 
             Id = id;
             ScopeId = scopeId;
 
-            _sink.Sink(_trackingEventFactory.CreateTrackerCreatedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
+            _context.Sink.Sink(_context.EventFactory.CreateTrackerCreatedEvent(ScopeId, Id, _context.Clock.Now, _watch.Elapsed));
         }
 
         public Guid Id { get; }
@@ -49,7 +44,7 @@ namespace Chronoscope
         {
             AllowTrackingOnce();
 
-            _sink.Sink(_trackingEventFactory.CreateTrackerStartedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
+            _context.Sink.Sink(_context.EventFactory.CreateTrackerStartedEvent(ScopeId, Id, _context.Clock.Now, _watch.Elapsed));
             _watch.Start();
         }
 
@@ -57,7 +52,7 @@ namespace Chronoscope
         {
             _watch.Stop();
 
-            _sink.Sink(_trackingEventFactory.CreateTrackerStoppedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
+            _context.Sink.Sink(_context.EventFactory.CreateTrackerStoppedEvent(ScopeId, Id, _context.Clock.Now, _watch.Elapsed));
         }
 
         private void EnsureStopped()
@@ -72,26 +67,26 @@ namespace Chronoscope
         {
             EnsureStopped();
 
-            _sink.Sink(_trackingEventFactory.CreateTrackerCompletedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed));
+            _context.Sink.Sink(_context.EventFactory.CreateTrackerCompletedEvent(ScopeId, Id, _context.Clock.Now, _watch.Elapsed));
         }
 
         public void Fault(Exception? exception)
         {
             EnsureStopped();
 
-            _sink.Sink(_trackingEventFactory.CreateTrackerFaultedEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, exception));
+            _context.Sink.Sink(_context.EventFactory.CreateTrackerFaultedEvent(ScopeId, Id, _context.Clock.Now, _watch.Elapsed, exception));
         }
 
         public void Cancel(Exception? exception)
         {
             EnsureStopped();
 
-            _sink.Sink(_trackingEventFactory.CreateTrackerCancelledEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, exception));
+            _context.Sink.Sink(_context.EventFactory.CreateTrackerCancelledEvent(ScopeId, Id, _context.Clock.Now, _watch.Elapsed, exception));
         }
 
         public void Warn(Exception? exception, string? message)
         {
-            _sink.Sink(_trackingEventFactory.CreateTrackerWarningEvent(ScopeId, Id, _clock.Now, _watch.Elapsed, message, exception));
+            _context.Sink.Sink(_context.EventFactory.CreateTrackerWarningEvent(ScopeId, Id, _context.Clock.Now, _watch.Elapsed, message, exception));
         }
     }
 }

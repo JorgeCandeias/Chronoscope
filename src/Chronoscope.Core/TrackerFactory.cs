@@ -1,4 +1,4 @@
-﻿using Chronoscope.Events;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Chronoscope
@@ -8,31 +8,25 @@ namespace Chronoscope
     /// </summary>
     internal class TrackerFactory : ITrackerFactory
     {
-        private readonly ITrackerStopwatchFactory _stopWatchFactory;
-        private readonly ITrackingEventFactory _trackingEventFactory;
-        private readonly ITrackingSinks _trackingSinks;
-        private readonly ISystemClock _clock;
+        private readonly IServiceProvider _provider;
 
-        public TrackerFactory(ITrackerStopwatchFactory stopWatchFactory, ITrackingEventFactory trackingEventFactory, ITrackingSinks trackingSinks, ISystemClock clock)
+        public TrackerFactory(IServiceProvider provider)
         {
-            _stopWatchFactory = stopWatchFactory ?? throw new ArgumentNullException(nameof(stopWatchFactory));
-            _trackingEventFactory = trackingEventFactory ?? throw new ArgumentNullException(nameof(trackingEventFactory));
-            _trackingSinks = trackingSinks ?? throw new ArgumentNullException(nameof(trackingSinks));
-            _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
         }
 
         public IAutoTracker CreateAutoSyncTracker(Guid id, ITrackingScope scope)
         {
-            var watch = _stopWatchFactory.Create();
+            var context = _provider.GetRequiredService<IChronoscopeContext>();
 
-            return new AutoTracker(watch, _trackingEventFactory, _trackingSinks, _clock, id, scope);
+            return new AutoTracker(context, id, scope);
         }
 
         public IManualTracker CreateManualTracker(Guid id, Guid scopeId)
         {
-            var watch = _stopWatchFactory.Create();
+            var context = _provider.GetRequiredService<IChronoscopeContext>();
 
-            return new ManualTracker(watch, _trackingEventFactory, _trackingSinks, _clock, id, scopeId);
+            return new ManualTracker(context, id, scopeId);
         }
     }
 }

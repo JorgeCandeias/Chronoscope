@@ -7,13 +7,13 @@ namespace Chronoscope
     /// </summary>
     internal class Chronoscope : IChronoscope
     {
-        private readonly ITrackingScopeFactory _factory;
+        private readonly IChronoscopeContext _context;
 
-        public Chronoscope(ITrackingScopeFactory factory)
+        public Chronoscope(IChronoscopeContext context)
         {
-            _factory = factory;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public ITrackingScope CreateScope(Guid id, string? name) => _factory.CreateScope(id, name, null);
+        public ITrackingScope CreateScope(Guid id, string? name) => _context.ScopeFactory.CreateScope(id, name, null);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Chronoscope.Events;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,8 +10,8 @@ namespace Chronoscope
     {
         private readonly ITrackingScope _scope;
 
-        public AutoTracker(ITrackerStopwatch watch, ITrackingEventFactory trackingEventFactory, ITrackingSinks sink, ISystemClock clock, Guid id, ITrackingScope scope)
-            : base(watch, trackingEventFactory, sink, clock, id, scope.Id)
+        public AutoTracker(IChronoscopeContext context, Guid id, ITrackingScope scope)
+            : base(context, id, scope.Id)
         {
             _scope = scope;
         }
