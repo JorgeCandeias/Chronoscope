@@ -1,5 +1,6 @@
 ﻿using Chronoscope.Tests.Fakes;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Chronoscope.Core.Tests
@@ -24,7 +25,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWithScopeThrowsOnNullWorkload()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             Action<ITrackingScope> workload = null;
 
             // act
@@ -38,7 +39,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWithScopeWorks()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             var called = false;
             void workload(ITrackingScope scope) { called = true; }
 
@@ -67,7 +68,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadThrowsOnNullWorkload()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             Action workload = null;
 
             // act
@@ -81,7 +82,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWorks()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             var called = false;
             void workload() { called = true; }
 
@@ -110,7 +111,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWithScopeAndResultThrowsOnNullWorkload()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             Func<ITrackingScope, int> workload = null;
 
             // act
@@ -124,7 +125,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWithScopeAndResultWorks()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             static int workload(ITrackingScope scope) { return 123; }
 
             // act
@@ -152,7 +153,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWithResultThrowsOnNullWorkload()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             Func<int> workload = null;
 
             // act
@@ -166,7 +167,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWithResultWorks()
         {
             // arrange
-            var tracker = new FakeAutoTracker();
+            IAutoTracker tracker = new FakeAutoTracker();
             static int workload() { return 123; }
 
             // act
@@ -174,6 +175,49 @@ namespace Chronoscope.Core.Tests
 
             // assert
             Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadWithScopeThrowsOnNullTracker()
+        {
+            // arrange
+            IAutoTracker tracker = null;
+            Func<ITrackingScope, Task> workload = null;
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => tracker.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(tracker), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadWithScopeThrowsOnNullWorkload()
+        {
+            // arrange
+            IAutoTracker tracker = new FakeAutoTracker();
+            Func<ITrackingScope, Task> workload = null;
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => tracker.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(workload), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadWithScopeWorks()
+        {
+            // arrange
+            IAutoTracker tracker = new FakeAutoTracker();
+            var called = false;
+            Task workload(ITrackingScope scope) { called = true; return Task.CompletedTask; }
+
+            // act
+            await tracker.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
         }
     }
 }
