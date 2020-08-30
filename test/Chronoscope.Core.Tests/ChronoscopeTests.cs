@@ -23,5 +23,18 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.Same(scope, result);
         }
+
+        [Fact]
+        public void ThrowsOnNullContext()
+        {
+            // arrange
+            IChronoscopeContext context = null;
+
+            // act
+            var result = Assert.Throws<ArgumentNullException>(() => new Chronoscope(context));
+
+            // assert
+            Assert.Equal(nameof(context), result.ParamName);
+        }
     }
 }
