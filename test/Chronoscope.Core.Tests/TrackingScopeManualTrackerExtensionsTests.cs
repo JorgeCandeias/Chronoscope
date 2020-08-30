@@ -35,7 +35,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void StartManualTrackerThrowsOnNullScope()
+        public void StartManualTrackerWithIdThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -49,7 +49,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void StartManualTrackerWorks()
+        public void StartManualTrackerWithIdWorks()
         {
             // arrange
             var id = Guid.NewGuid();
@@ -58,6 +58,35 @@ namespace Chronoscope.Core.Tests
 
             // act
             var result = scope.StartManualTracker(id);
+
+            // assert
+            Mock.Get(scope).VerifyAll();
+            Mock.Get(tracker).Verify(x => x.Start());
+            Assert.Same(tracker, result);
+        }
+
+        [Fact]
+        public void StartManualTrackerThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.StartManualTracker());
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public void StartManualTrackerWorks()
+        {
+            // arrange
+            var tracker = Mock.Of<IManualTracker>();
+            var scope = Mock.Of<ITrackingScope>(x => x.CreateManualTracker(It.IsAny<Guid>()) == tracker);
+
+            // act
+            var result = scope.StartManualTracker();
 
             // assert
             Mock.Get(scope).VerifyAll();
