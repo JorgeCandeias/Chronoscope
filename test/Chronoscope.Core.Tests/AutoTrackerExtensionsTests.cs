@@ -219,5 +219,48 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.True(called);
         }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadThrowsOnNullTracker()
+        {
+            // arrange
+            IAutoTracker tracker = null;
+            Func<Task> workload = null;
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => tracker.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(tracker), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadThrowsOnNullWorkload()
+        {
+            // arrange
+            IAutoTracker tracker = new FakeAutoTracker();
+            Func<Task> workload = null;
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => tracker.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(workload), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadWorks()
+        {
+            // arrange
+            IAutoTracker tracker = new FakeAutoTracker();
+            var called = false;
+            Task workload() { called = true; return Task.CompletedTask; }
+
+            // act
+            await tracker.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
     }
 }
