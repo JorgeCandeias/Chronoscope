@@ -296,7 +296,49 @@ namespace Chronoscope.Core.Tests
         {
             // arrange
             IAutoTracker tracker = new FakeAutoTracker();
-            Task<int> workload(ITrackingScope scope) { return Task.FromResult(123); }
+            static Task<int> workload(ITrackingScope scope) { return Task.FromResult(123); }
+
+            // act
+            var result = await tracker.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadWithResultThrowsOnNullTracker()
+        {
+            // arrange
+            IAutoTracker tracker = null;
+            Func<Task<int>> workload = null;
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => tracker.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(tracker), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadWithResultThrowsOnNullWorkload()
+        {
+            // arrange
+            IAutoTracker tracker = new FakeAutoTracker();
+            Func<Task<int>> workload = null;
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => tracker.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(workload), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task TrackAsyncWorkloadWithResultWorks()
+        {
+            // arrange
+            IAutoTracker tracker = new FakeAutoTracker();
+            static Task<int> workload() { return Task.FromResult(123); }
 
             // act
             var result = await tracker.TrackAsync(workload).ConfigureAwait(false);
