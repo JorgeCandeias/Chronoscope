@@ -33,14 +33,14 @@ namespace Chronoscope.Sinks.Logger
 
         #region High-Performance Logging Delegates
 
-        private readonly Action<ILogger, Guid, DateTimeOffset, Exception> _logScopeCreated;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, Exception> _logTrackerCreated;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerStarted;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerStopped;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerCompleted;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerFaulted;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception> _logTrackerCancelled;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, string, Exception> _logTrackerWarning;
+        private readonly Action<ILogger, Guid, DateTimeOffset, Exception?> _logScopeCreated;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, Exception?> _logTrackerCreated;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerStarted;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerStopped;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerCompleted;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerFaulted;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerCancelled;
+        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, string, Exception?> _logTrackerWarning;
 
         #endregion High-Performance Logging Delegates
 
