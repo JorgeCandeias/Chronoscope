@@ -7,7 +7,7 @@ namespace Chronoscope.Core.Tests
     public class AutoTrackerExtensionsTests
     {
         [Fact]
-        public void TrackWorkloadThrowsOnNullTracker()
+        public void TrackWorkloadWithScopeThrowsOnNullTracker()
         {
             // arrange
             IAutoTracker tracker = null;
@@ -21,7 +21,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWorkloadThrowsOnNullWorkload()
+        public void TrackWorkloadWithScopeThrowsOnNullWorkload()
         {
             // arrange
             var tracker = new FakeAutoTracker();
@@ -35,7 +35,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWorkloadWorks()
+        public void TrackWorkloadWithScopeWorks()
         {
             // arrange
             var tracker = new FakeAutoTracker();
