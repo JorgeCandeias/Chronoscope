@@ -79,9 +79,9 @@ namespace Chronoscope.Sinks.Logger
         public int EventId { get; set; }
 
         [Required]
-        public string MessageFormat { get; set; }
+        public string MessageFormat { get; set; } = string.Empty;
 
         [Required]
-        public string EventName { get; set; }
+        public string EventName { get; set; } = string.Empty;
     }
 }
