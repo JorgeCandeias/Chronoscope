@@ -5,6 +5,6 @@ namespace Chronoscope
     public class ChronoscopeOptions
     {
         [Required]
-        public string DefaultTaskScopeNameFormat { get; } = "Scope {0}";
+        public string DefaultTaskScopeNameFormat { get; set; } = "Scope {0}";
     }
 }
