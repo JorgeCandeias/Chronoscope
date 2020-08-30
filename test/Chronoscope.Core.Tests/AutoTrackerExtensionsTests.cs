@@ -1,6 +1,5 @@
-﻿using Moq;
+﻿using Chronoscope.Tests.Fakes;
 using System;
-using System.Threading;
 using Xunit;
 
 namespace Chronoscope.Core.Tests
@@ -25,7 +24,7 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadThrowsOnNullWorkload()
         {
             // arrange
-            IAutoTracker tracker = Mock.Of<IAutoTracker>();
+            var tracker = new FakeAutoTracker();
             Action<ITrackingScope> workload = null;
 
             // act
@@ -39,13 +38,14 @@ namespace Chronoscope.Core.Tests
         public void TrackWorkloadWorks()
         {
             // arrange
-            IAutoTracker tracker = Mock.Of<IAutoTracker>();
+            var tracker = new FakeAutoTracker();
+            var called = false;
 
             // act
-            tracker.Track(scope => { });
+            tracker.Track(scope => { called = true; });
 
             // assert
-            Mock.Get(tracker).Verify(x => x.Track(It.IsAny<Action<ITrackingScope, CancellationToken>>(), It.IsAny<CancellationToken>()));
+            Assert.True(called);
         }
     }
 }
