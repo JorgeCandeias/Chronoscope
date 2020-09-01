@@ -103,5 +103,34 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.True(called);
         }
+
+        [Fact]
+        public void TrackWithScopeAndTokenThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            Action<ITrackingScope, CancellationToken> workload = null;
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.Track(workload, CancellationToken.None));
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public void TrackWithScopeAndTokenWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            void workload(ITrackingScope scope, CancellationToken token) { called = true; }
+
+            // act
+            scope.Track(workload, CancellationToken.None);
+
+            // assert
+            Assert.True(called);
+        }
     }
 }
