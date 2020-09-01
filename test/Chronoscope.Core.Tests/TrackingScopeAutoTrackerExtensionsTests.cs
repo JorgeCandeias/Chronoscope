@@ -204,5 +204,21 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.Equal(nameof(scope), ex.ParamName);
         }
+
+        [Fact]
+        public void TrackWithResultAndIdAndScopeAndTokenWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            int workload(ITrackingScope scope, CancellationToken token) { called = true; return 123; }
+
+            // act
+            var result = scope.Track(Guid.NewGuid(), workload, CancellationToken.None);
+
+            // assert
+            Assert.True(called);
+            Assert.Equal(123, result);
+        }
     }
 }
