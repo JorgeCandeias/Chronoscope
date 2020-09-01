@@ -72,5 +72,36 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.True(called);
         }
+
+        [Fact]
+        public void TrackWithIdThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            var id = Guid.NewGuid();
+            Action workload = null;
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.Track(id, workload));
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public void TrackWithIdWorks()
+        {
+            // arrange
+            var id = Guid.NewGuid();
+            var scope = new FakeTrackingScope();
+            var called = false;
+            void workload() { called = true; }
+
+            // act
+            scope.Track(id, workload);
+
+            // assert
+            Assert.True(called);
+        }
     }
 }
