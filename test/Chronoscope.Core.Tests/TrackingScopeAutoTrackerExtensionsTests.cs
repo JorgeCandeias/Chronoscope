@@ -190,5 +190,19 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.True(called);
         }
+
+        [Fact]
+        public void TrackWithResultAndIdAndScopeAndTokenThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            Func<ITrackingScope, CancellationToken, int> workload = null;
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.Track(Guid.NewGuid(), workload, CancellationToken.None));
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
     }
 }
