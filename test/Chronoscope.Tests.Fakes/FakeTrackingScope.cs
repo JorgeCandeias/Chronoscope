@@ -12,7 +12,11 @@ namespace Chronoscope.Tests.Fakes
 
         public IAutoTracker CreateAutoTracker(Guid id)
         {
-            throw new NotImplementedException();
+            return new FakeAutoTracker
+            {
+                Id = id,
+                Scope = this
+            };
         }
 
         public IManualTracker CreateManualTracker(Guid id)
