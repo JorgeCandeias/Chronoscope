@@ -10,6 +10,33 @@ namespace Chronoscope.Sinks.Logger.Tests
     public class LoggerSinkChronoscopeBuilderExtensionsTests
     {
         [Fact]
+        public void AddLoggerThrowsOnNullBuilder()
+        {
+            // arrange
+            IChronoscopeBuilder builder = null;
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => builder.AddLoggerSink(options => { }));
+
+            // assert
+            Assert.Equal(nameof(builder), ex.ParamName);
+        }
+
+        [Fact]
+        public void AddLoggerThrowsOnNullConfigure()
+        {
+            // arrange
+            IChronoscopeBuilder builder = Mock.Of<IChronoscopeBuilder>();
+            Action<LoggerSinkOptions> configure = null;
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => builder.AddLoggerSink(configure));
+
+            // assert
+            Assert.Equal(nameof(builder), ex.ParamName);
+        }
+
+        [Fact]
         public void AddLoggerSinkWorks()
         {
             // arrange
