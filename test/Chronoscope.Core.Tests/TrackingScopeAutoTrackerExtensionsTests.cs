@@ -2,6 +2,7 @@
 using Moq;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Chronoscope.Core.Tests
@@ -9,7 +10,7 @@ namespace Chronoscope.Core.Tests
     public class TrackingScopeAutoTrackerExtensionsTests
     {
         [Fact]
-        public void TrackWithIdAndScopeAndTokenThrowsOnNullScope()
+        public void VoidTrackWithIdAndScopeAndTokenThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -25,7 +26,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithIdAndScopeAndTokenWorks()
+        public void VoidTrackWithIdAndScopeAndTokenWorks()
         {
             // arrange
             var id = Guid.NewGuid();
@@ -43,7 +44,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithIdAndScopeThrowsOnNullScope()
+        public void VoidTrackWithIdAndScopeThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -58,7 +59,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithIdAndScopeWorks()
+        public void VoidTrackWithIdAndScopeWorks()
         {
             // arrange
             var id = Guid.NewGuid();
@@ -74,7 +75,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithIdThrowsOnNullScope()
+        public void VoidTrackWithIdThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -89,7 +90,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithIdWorks()
+        public void VoidTrackWithIdWorks()
         {
             // arrange
             var id = Guid.NewGuid();
@@ -105,7 +106,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithScopeAndTokenThrowsOnNullScope()
+        public void VoidTrackWithScopeAndTokenThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -119,7 +120,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithScopeAndTokenWorks()
+        public void VoidTrackWithScopeAndTokenWorks()
         {
             // arrange
             var scope = new FakeTrackingScope();
@@ -134,7 +135,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithScopeThrowsOnNullScope()
+        public void VoidTrackWithScopeThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -148,7 +149,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithScopeWorks()
+        public void VoidTrackWithScopeWorks()
         {
             // arrange
             var scope = new FakeTrackingScope();
@@ -163,7 +164,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackThrowsOnNullScope()
+        public void VoidTrackThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -177,7 +178,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWorks()
+        public void VoidTrackWorks()
         {
             // arrange
             var scope = new FakeTrackingScope();
@@ -192,7 +193,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithResultAndIdAndScopeAndTokenThrowsOnNullScope()
+        public void ResultTrackWithIdAndScopeAndTokenThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -206,7 +207,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithResultAndIdAndScopeAndTokenWorks()
+        public void ResultTrackWithIdAndScopeAndTokenWorks()
         {
             // arrange
             var scope = new FakeTrackingScope();
@@ -222,7 +223,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithResultAndIdAndScopeThrowsOnNullScope()
+        public void ResultTrackWithIdAndScopeThrowsOnNullScope()
         {
             // arrange
             ITrackingScope scope = null;
@@ -236,7 +237,7 @@ namespace Chronoscope.Core.Tests
         }
 
         [Fact]
-        public void TrackWithResultAndIdAndScopeWorks()
+        public void ResultTrackWithIdAndScopeWorks()
         {
             // arrange
             var scope = new FakeTrackingScope();
@@ -249,6 +250,474 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.True(called);
             Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public void ResultTrackWithIdThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static int workload() { return 123; }
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.Track(Guid.NewGuid(), workload));
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public void ResultTrackWithIdWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            int workload() { called = true; return 123; }
+
+            // act
+            var result = scope.Track(Guid.NewGuid(), workload);
+
+            // assert
+            Assert.True(called);
+            Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public void ResultTrackWithScopeAndTokenThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static int workload(ITrackingScope scope, CancellationToken token) { return 123; }
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.Track(workload));
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public void ResultTrackWithScopeAndTokenWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            int workload(ITrackingScope scope, CancellationToken token) { called = true; return 123; }
+
+            // act
+            var result = scope.Track(workload);
+
+            // assert
+            Assert.True(called);
+            Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public void ResultTrackWithScopeThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static int workload(ITrackingScope scope) { return 123; }
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.Track(workload));
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public void ResultTrackWithScopeWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            int workload(ITrackingScope scope) { called = true; return 123; }
+
+            // act
+            var result = scope.Track(workload);
+
+            // assert
+            Assert.True(called);
+            Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public void ResultTrackThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static int workload() { return 123; }
+
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => scope.Track(workload));
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public void ResultTrackWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            int workload() { called = true; return 123; }
+
+            // act
+            var result = scope.Track(workload);
+
+            // assert
+            Assert.True(called);
+            Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithIdAndScopeAndTokenThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task workload(ITrackingScope scope, CancellationToken token) { return Task.CompletedTask; }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(Guid.NewGuid(), workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithIdAndScopeAndTokenWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task workload(ITrackingScope scope, CancellationToken token) { called = true; return Task.CompletedTask; }
+
+            // act
+            await scope.TrackAsync(Guid.NewGuid(), workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithIdAndScopeThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task workload(ITrackingScope scope) { return Task.CompletedTask; }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(Guid.NewGuid(), workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithIdAndScopeWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task workload(ITrackingScope scope) { called = true; return Task.CompletedTask; }
+
+            // act
+            await scope.TrackAsync(Guid.NewGuid(), workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithIdThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task workload() { return Task.CompletedTask; }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(Guid.NewGuid(), workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithIdWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task workload() { called = true; return Task.CompletedTask; }
+
+            // act
+            await scope.TrackAsync(Guid.NewGuid(), workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithScopeAndTokenThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task workload(ITrackingScope scope, CancellationToken token) { return Task.CompletedTask; }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithScopeAndTokenWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task workload(ITrackingScope scope, CancellationToken token) { called = true; return Task.CompletedTask; }
+
+            // act
+            await scope.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithScopeThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task workload(ITrackingScope scope) { return Task.CompletedTask; }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWithScopeWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task workload(ITrackingScope scope) { called = true; return Task.CompletedTask; }
+
+            // act
+            await scope.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task workload() { return Task.CompletedTask; }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task VoidTrackAsyncWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task workload() { called = true; return Task.CompletedTask; }
+
+            // act
+            await scope.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithIdAndScopeAndTokenThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task<int> workload(ITrackingScope scope, CancellationToken token) { return Task.FromResult(123); }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(Guid.NewGuid(), workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithIdAndScopeAndTokenWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task<int> workload(ITrackingScope scope, CancellationToken token) { called = true; return Task.FromResult(123); }
+
+            // act
+            await scope.TrackAsync(Guid.NewGuid(), workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithIdAndScopeThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task<int> workload(ITrackingScope scope) { return Task.FromResult(123); }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(Guid.NewGuid(), workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithIdAndScopeWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task<int> workload(ITrackingScope scope) { called = true; return Task.FromResult(123); }
+
+            // act
+            await scope.TrackAsync(Guid.NewGuid(), workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithIdThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task<int> workload() { return Task.FromResult(123); }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(Guid.NewGuid(), workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithIdWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task<int> workload() { called = true; return Task.FromResult(123); }
+
+            // act
+            await scope.TrackAsync(Guid.NewGuid(), workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithScopeAndTokenThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task<int> workload(ITrackingScope scope, CancellationToken token) { return Task.FromResult(123); }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithScopeAndTokenWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task<int> workload(ITrackingScope scope, CancellationToken token) { called = true; return Task.FromResult(123); }
+
+            // act
+            await scope.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithScopeThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task<int> workload(ITrackingScope scope) { return Task.FromResult(123); }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWithScopeWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task<int> workload(ITrackingScope scope) { called = true; return Task.FromResult(123); }
+
+            // act
+            await scope.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncThrowsOnNullScope()
+        {
+            // arrange
+            ITrackingScope scope = null;
+            static Task<int> workload() { return Task.FromResult(123); }
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => scope.TrackAsync(workload)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(scope), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncWorks()
+        {
+            // arrange
+            var scope = new FakeTrackingScope();
+            var called = false;
+            Task<int> workload() { called = true; return Task.FromResult(123); }
+
+            // act
+            await scope.TrackAsync(workload).ConfigureAwait(false);
+
+            // assert
+            Assert.True(called);
         }
     }
 }
