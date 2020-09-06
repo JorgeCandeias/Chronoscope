@@ -20,7 +20,5 @@ namespace Chronoscope.Events
         ITrackerFaultedEvent CreateTrackerFaultedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed, Exception? exception);
 
         ITrackerCancelledEvent CreateTrackerCancelledEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed, Exception? exception);
-
-        ITrackerWarningEvent CreateTrackerWarningEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed, string? message, Exception? exception);
     }
 }

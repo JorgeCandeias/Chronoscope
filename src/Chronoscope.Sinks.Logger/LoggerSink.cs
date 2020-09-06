@@ -28,7 +28,6 @@ namespace Chronoscope.Sinks.Logger
             _logTrackerCompleted = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Information, new EventId(opt.TrackerCompletedEventOptions.EventId, opt.TrackerCompletedEventOptions.EventName), opt.TrackerCompletedEventOptions.MessageFormat);
             _logTrackerFaulted = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Error, new EventId(opt.TrackerFaultedEventOptions.EventId, opt.TrackerFaultedEventOptions.EventName), opt.TrackerFaultedEventOptions.MessageFormat);
             _logTrackerCancelled = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan>(LogLevel.Error, new EventId(opt.TrackerCancelledEventOptions.EventId, opt.TrackerCancelledEventOptions.EventName), opt.TrackerCancelledEventOptions.MessageFormat);
-            _logTrackerWarning = LoggerMessage.Define<Guid, Guid, DateTimeOffset, TimeSpan, string?>(LogLevel.Warning, new EventId(opt.TrackerWarningEventOptions.EventId, opt.TrackerWarningEventOptions.EventName), opt.TrackerWarningEventOptions.MessageFormat);
         }
 
         #region High-Performance Logging Delegates
@@ -40,7 +39,6 @@ namespace Chronoscope.Sinks.Logger
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerCompleted;
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerFaulted;
         private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, Exception?> _logTrackerCancelled;
-        private readonly Action<ILogger, Guid, Guid, DateTimeOffset, TimeSpan, string?, Exception?> _logTrackerWarning;
 
         #endregion High-Performance Logging Delegates
 
@@ -76,10 +74,6 @@ namespace Chronoscope.Sinks.Logger
 
                 case ITrackerCancelledEvent e:
                     _logTrackerCancelled(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, e.Exception);
-                    break;
-
-                case ITrackerWarningEvent e:
-                    _logTrackerWarning(_logger, e.ScopeId, e.TrackerId, e.Timestamp, e.Elapsed, e.Message, e.Exception);
                     break;
 
                 default:

@@ -61,11 +61,6 @@ namespace Chronoscope.Core.Tests
                 Mock.Get(watch).Verify(x => x.Start());
                 Assert.Equal(TimeSpan.Zero, tracker.Elapsed);
 
-                // act - issue warning
-                var wex = new TimeoutException();
-                var wmessage = Guid.NewGuid().ToString();
-                tracker.Warn(wex, wmessage);
-
                 // act - stop manual tracking
                 tracker.Stop();
 
@@ -104,16 +99,6 @@ namespace Chronoscope.Core.Tests
                         Assert.Equal(trackingId, x.TrackerId);
                         Assert.Equal(now, x.Timestamp);
                         Assert.Equal(TimeSpan.Zero, x.Elapsed);
-                    },
-                    e =>
-                    {
-                        var x = Assert.IsAssignableFrom<ITrackerWarningEvent>(e);
-                        Assert.Equal(scopeId, x.ScopeId);
-                        Assert.Equal(trackingId, x.TrackerId);
-                        Assert.Equal(now, x.Timestamp);
-                        Assert.Equal(TimeSpan.Zero, x.Elapsed);
-                        Assert.Same(wex, x.Exception);
-                        Assert.Equal(wmessage, x.Message);
                     },
                     e =>
                     {

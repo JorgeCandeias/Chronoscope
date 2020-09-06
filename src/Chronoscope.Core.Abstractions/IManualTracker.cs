@@ -34,12 +34,5 @@ namespace Chronoscope
         /// </summary>
         /// <param name="exception">The exception that caused the cancellation.</param>
         void Cancel(Exception? exception);
-
-        /// <summary>
-        /// Raises a warning within this tracking activity.
-        /// </summary>
-        /// <param name="exception">The exception that caused the warning.</param>
-        /// <param name="message">A message relevant to this warning.</param>
-        void Warn(Exception? exception, string? message);
     }
 }

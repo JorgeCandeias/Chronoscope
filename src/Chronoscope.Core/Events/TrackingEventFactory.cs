@@ -20,7 +20,5 @@ namespace Chronoscope.Events
         public ITrackerStartedEvent CreateTrackerStartedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed) => new TrackerStartedEvent(scopeId, trackerId, timestamp, elapsed);
 
         public ITrackerStoppedEvent CreateTrackerStoppedEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed) => new TrackerStoppedEvent(scopeId, trackerId, timestamp, elapsed);
-
-        public ITrackerWarningEvent CreateTrackerWarningEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed, string? message, Exception? exception) => new TrackerWarningEvent(scopeId, trackerId, timestamp, elapsed, message, exception);
     }
 }

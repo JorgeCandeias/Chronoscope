@@ -83,18 +83,5 @@ namespace Chronoscope.Tests.Fakes
                 Elapsed = elapsed
             };
         }
-
-        public ITrackerWarningEvent CreateTrackerWarningEvent(Guid scopeId, Guid trackerId, DateTimeOffset timestamp, TimeSpan elapsed, string message, Exception exception)
-        {
-            return new FakeTrackerWarningEvent
-            {
-                ScopeId = scopeId,
-                TrackerId = trackerId,
-                Timestamp = timestamp,
-                Elapsed = elapsed,
-                Message = message,
-                Exception = exception
-            };
-        }
     }
 }
