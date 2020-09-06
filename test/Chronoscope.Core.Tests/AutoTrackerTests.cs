@@ -52,5 +52,56 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.True(called);
         }
+
+        [Fact]
+        public void VoidTrackCancelsWorkload()
+        {
+            // arrange
+            var called = false;
+            var context = Mock.Of<IChronoscopeContext>(x =>
+                x.StopwatchFactory == Mock.Of<ITrackerStopwatchFactory>(x =>
+                    x.Create() == Mock.Of<ITrackerStopwatch>()) &&
+                x.Sink == Mock.Of<ITrackingSinks>() &&
+                x.EventFactory == Mock.Of<ITrackingEventFactory>() &&
+                x.Clock == Mock.Of<ISystemClock>());
+            var id = Guid.NewGuid();
+            var scope = Mock.Of<ITrackingScope>();
+            void workload(ITrackingScope scope, CancellationToken token) { token.ThrowIfCancellationRequested(); called = true; }
+            var tracker = new AutoTracker(context, id, scope);
+
+            // act
+            Assert.Throws<OperationCanceledException>(() =>
+            {
+                tracker.Track(workload, new CancellationToken(true));
+            });
+
+            // assert
+            Assert.False(called);
+        }
+
+        [Fact]
+        public void VoidTrackFaultsWorkload()
+        {
+            // arrange
+            var context = Mock.Of<IChronoscopeContext>(x =>
+                x.StopwatchFactory == Mock.Of<ITrackerStopwatchFactory>(x =>
+                    x.Create() == Mock.Of<ITrackerStopwatch>()) &&
+                x.Sink == Mock.Of<ITrackingSinks>() &&
+                x.EventFactory == Mock.Of<ITrackingEventFactory>() &&
+                x.Clock == Mock.Of<ISystemClock>());
+            var id = Guid.NewGuid();
+            var scope = Mock.Of<ITrackingScope>();
+            static void workload(ITrackingScope scope, CancellationToken token) { throw new InvalidOperationException("Test"); }
+            var tracker = new AutoTracker(context, id, scope);
+
+            // act
+            var ex = Assert.Throws<InvalidOperationException>(() =>
+            {
+                tracker.Track(workload, default);
+            });
+
+            // assert
+            Assert.Equal("Test", ex.Message);
+        }
     }
 }
