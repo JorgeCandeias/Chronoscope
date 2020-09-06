@@ -219,5 +219,97 @@ namespace Chronoscope.Core.Tests
             // assert
             Assert.Equal("Test", ex.Message);
         }
+
+        [Fact]
+        public async Task ResultTrackAsyncThrowsOnNullWorkload()
+        {
+            // arrange
+            var context = Mock.Of<IChronoscopeContext>(x =>
+                x.StopwatchFactory == Mock.Of<ITrackerStopwatchFactory>(x =>
+                    x.Create() == Mock.Of<ITrackerStopwatch>()) &&
+                x.Sink == Mock.Of<ITrackingSinks>() &&
+                x.EventFactory == Mock.Of<ITrackingEventFactory>() &&
+                x.Clock == Mock.Of<ISystemClock>());
+            var id = Guid.NewGuid();
+            var scope = Mock.Of<ITrackingScope>();
+            Func<ITrackingScope, CancellationToken, Task<int>> workload = null;
+            var tracker = new AutoTracker(context, id, scope);
+
+            // act
+            var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => tracker.TrackAsync(workload, default)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(nameof(workload), ex.ParamName);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncCallsWorkload()
+        {
+            // arrange
+            var context = Mock.Of<IChronoscopeContext>(x =>
+                x.StopwatchFactory == Mock.Of<ITrackerStopwatchFactory>(x =>
+                    x.Create() == Mock.Of<ITrackerStopwatch>()) &&
+                x.Sink == Mock.Of<ITrackingSinks>() &&
+                x.EventFactory == Mock.Of<ITrackingEventFactory>() &&
+                x.Clock == Mock.Of<ISystemClock>());
+            var id = Guid.NewGuid();
+            var scope = Mock.Of<ITrackingScope>();
+            static Task<int> workload(ITrackingScope scope, CancellationToken token) { return Task.FromResult(123); }
+            var tracker = new AutoTracker(context, id, scope);
+
+            // act
+            var result = await tracker.TrackAsync(workload, default).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal(123, result);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncCancelsWorkload()
+        {
+            // arrange
+            var called = false;
+            var context = Mock.Of<IChronoscopeContext>(x =>
+                x.StopwatchFactory == Mock.Of<ITrackerStopwatchFactory>(x =>
+                    x.Create() == Mock.Of<ITrackerStopwatch>()) &&
+                x.Sink == Mock.Of<ITrackingSinks>() &&
+                x.EventFactory == Mock.Of<ITrackingEventFactory>() &&
+                x.Clock == Mock.Of<ISystemClock>());
+            var id = Guid.NewGuid();
+            var scope = Mock.Of<ITrackingScope>();
+            Task<int> workload(ITrackingScope scope, CancellationToken token) { token.ThrowIfCancellationRequested(); called = true; return Task.FromResult(1); }
+            var tracker = new AutoTracker(context, id, scope);
+
+            // act
+            await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            {
+                await tracker.TrackAsync(workload, new CancellationToken(true)).ConfigureAwait(false);
+            }).ConfigureAwait(false);
+
+            // assert
+            Assert.False(called);
+        }
+
+        [Fact]
+        public async Task ResultTrackAsyncFaultsWorkload()
+        {
+            // arrange
+            var context = Mock.Of<IChronoscopeContext>(x =>
+                x.StopwatchFactory == Mock.Of<ITrackerStopwatchFactory>(x =>
+                    x.Create() == Mock.Of<ITrackerStopwatch>()) &&
+                x.Sink == Mock.Of<ITrackingSinks>() &&
+                x.EventFactory == Mock.Of<ITrackingEventFactory>() &&
+                x.Clock == Mock.Of<ISystemClock>());
+            var id = Guid.NewGuid();
+            var scope = Mock.Of<ITrackingScope>();
+            static Task<int> workload(ITrackingScope scope, CancellationToken token) { throw new InvalidOperationException("Test"); }
+            var tracker = new AutoTracker(context, id, scope);
+
+            // act
+            var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => tracker.TrackAsync(workload, default)).ConfigureAwait(false);
+
+            // assert
+            Assert.Equal("Test", ex.Message);
+        }
     }
 }
