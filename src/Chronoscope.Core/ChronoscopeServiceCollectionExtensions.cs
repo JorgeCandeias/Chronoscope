@@ -16,6 +16,7 @@ namespace Chronoscope
                 .AddSingleton<ITrackerFactory, TrackerFactory>()
                 .AddSingleton<ITrackingSinks, TrackingSinks>()
                 .AddSingleton<ITrackingEventFactory, TrackingEventFactory>()
+                .AddSingleton<ITrackingScopeStack, TrackingScopeStack>()
                 .AddSingleton<ISystemClock, SystemClock>()
                 .AddSingleton<IChronoscopeContext, ChronoscopeContext>()
                 .AddOptions<ChronoscopeOptions>().ValidateDataAnnotations().Services;

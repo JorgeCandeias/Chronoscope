@@ -11,7 +11,7 @@ namespace Chronoscope.Core.Tests
         public void ConstructorThrowsOnNullClock()
         {
             // act
-            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(null, null, null, null, null, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(null, null, null, null, null, null, null));
 
             // assert
             Assert.Equal("clock", ex.ParamName);
@@ -21,7 +21,7 @@ namespace Chronoscope.Core.Tests
         public void ConstructorThrowsOnNullSink()
         {
             // act
-            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), null, null, null, null, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), null, null, null, null, null, null));
 
             // assert
             Assert.Equal("sink", ex.ParamName);
@@ -31,7 +31,7 @@ namespace Chronoscope.Core.Tests
         public void ConstructorThrowsOnNullEventFactory()
         {
             // act
-            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), null, null, null, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), null, null, null, null, null));
 
             // assert
             Assert.Equal("eventFactory", ex.ParamName);
@@ -41,7 +41,7 @@ namespace Chronoscope.Core.Tests
         public void ConstructorThrowsOnNullStopwatchFactory()
         {
             // act
-            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), Mock.Of<ITrackingEventFactory>(), null, null, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), Mock.Of<ITrackingEventFactory>(), null, null, null, null));
 
             // assert
             Assert.Equal("stopwatchFactory", ex.ParamName);
@@ -51,7 +51,7 @@ namespace Chronoscope.Core.Tests
         public void ConstructorThrowsOnNullScopeFactory()
         {
             // act
-            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), Mock.Of<ITrackingEventFactory>(), Mock.Of<ITrackerStopwatchFactory>(), null, null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), Mock.Of<ITrackingEventFactory>(), Mock.Of<ITrackerStopwatchFactory>(), null, null, null));
 
             // assert
             Assert.Equal("scopeFactory", ex.ParamName);
@@ -61,10 +61,20 @@ namespace Chronoscope.Core.Tests
         public void ConstructorThrowsOnNullTrackerFactory()
         {
             // act
-            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), Mock.Of<ITrackingEventFactory>(), Mock.Of<ITrackerStopwatchFactory>(), Mock.Of<ITrackingScopeFactory>(), null));
+            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), Mock.Of<ITrackingEventFactory>(), Mock.Of<ITrackerStopwatchFactory>(), Mock.Of<ITrackingScopeFactory>(), null, null));
 
             // assert
             Assert.Equal("trackerFactory", ex.ParamName);
+        }
+
+        [Fact]
+        public void ConstructorThrowsOnNullTrackingScopeStack()
+        {
+            // act
+            var ex = Assert.Throws<ArgumentNullException>(() => new ChronoscopeContext(Mock.Of<ISystemClock>(), Mock.Of<ITrackingSinks>(), Mock.Of<ITrackingEventFactory>(), Mock.Of<ITrackerStopwatchFactory>(), Mock.Of<ITrackingScopeFactory>(), Mock.Of<ITrackerFactory>(), null));
+
+            // assert
+            Assert.Equal("trackingScopeStack", ex.ParamName);
         }
 
         [Fact]
@@ -76,9 +86,10 @@ namespace Chronoscope.Core.Tests
             var stopwatchFactory = Mock.Of<ITrackerStopwatchFactory>();
             var scopeFactory = Mock.Of<ITrackingScopeFactory>();
             var trackerFactory = Mock.Of<ITrackerFactory>();
+            var trackingScopeStack = Mock.Of<ITrackingScopeStack>();
 
             // act
-            var context = new ChronoscopeContext(clock, sinks, eventFactory, stopwatchFactory, scopeFactory, trackerFactory);
+            var context = new ChronoscopeContext(clock, sinks, eventFactory, stopwatchFactory, scopeFactory, trackerFactory, trackingScopeStack);
 
             // assert
             Assert.Same(clock, context.Clock);
@@ -87,6 +98,7 @@ namespace Chronoscope.Core.Tests
             Assert.Same(stopwatchFactory, context.StopwatchFactory);
             Assert.Same(scopeFactory, context.ScopeFactory);
             Assert.Same(trackerFactory, context.TrackerFactory);
+            Assert.Same(trackingScopeStack, context.TrackingScopeStack);
         }
     }
 }
